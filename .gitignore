@@ -1,0 +1,19 @@
+# API keys and credentials
+api_keys.py
+google_credentials.json
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Logs
+*.log
+
+# Keep JSON files (as requested)
+# *.json

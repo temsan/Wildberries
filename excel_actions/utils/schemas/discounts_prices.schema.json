@@ -1,0 +1,35 @@
+{
+  "response_structure": {
+    "data": "dict",
+    "error": "bool",
+    "errorText": "str",
+    "analysis": "dict",
+    "metadata": "dict"
+  },
+  "data_structure": {
+    "listGoods": "list"
+  },
+  "listGoods_item_critical": {
+    "nmID": "int",
+    "vendorCode": "str",
+    "prices": "list",
+    "discountedPrices": "list",
+    "discount": "int",
+    "addClubDiscount": "null_or_int",
+    "discountOnSite": "null_or_int",
+    "competitivePrice": "optional_null_or_int",
+    "isCompetitivePrice": "optional_null_or_bool"
+  },
+  "listGoods_item_optional": {
+    "brand": "str",
+    "subject": "str",
+    "title": "str",
+    "photoUrl": "str",
+    "currencyID": "int",
+    "isoCode4217": "str",
+    "editableSizePrice": "bool",
+    "clubDiscountedPrices": "list",
+    "colors": "list",
+    "promotions": "optional_list"
+  }
+}

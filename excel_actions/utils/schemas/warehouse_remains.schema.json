@@ -1,0 +1,21 @@
+{
+  "item_structure": {
+    "vendorCode": "str",
+    "nmId": "int", 
+    "barcode": "str",
+    "volume": "int_or_float",
+    "warehouses": "list"
+  },
+  "warehouse_item": {
+    "warehouseName": "str",
+    "quantity": "int"
+  },
+  "required_warehouse_names": {
+    "first": "В пути до получателей",
+    "second": "В пути возвраты на склад WB", 
+    "third": "Всего находится на складах"
+  },
+  "flexible_warehouse_validation": true,
+  "critical_fields": ["barcode", "warehouses", "volume"],
+  "optional_fields": ["vendorCode", "nmId"]
+}

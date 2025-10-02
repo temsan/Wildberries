@@ -1,0 +1,27 @@
+{
+  "cards_item": {
+    "nmID": "int",
+    "imtID": "int",
+    "nmUUID": "string",
+    "subjectID": "int",
+    "subjectName": "string",
+    "vendorCode": "string",
+    "brand": "string",
+    "title": "string",
+    "description": "string",
+    "needKiz": "boolean",
+    "photos": "array",
+    "dimensions": "object",
+    "characteristics": "array",
+    "sizes": "array",
+    "createdAt": "string",
+    "updatedAt": "string"
+  },
+  "cursor": {
+    "updatedAt": "string",
+    "nmID": "int",
+    "total": "int"
+  },
+  "total": "int"
+}
+
