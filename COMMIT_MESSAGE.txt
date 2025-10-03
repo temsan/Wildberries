@@ -31,15 +31,23 @@ Python клиент:
 - supabase==2.3.0
 - postgrest-py==0.13.0
 
+Веб-интерфейс (Streamlit):
+- database/web_interface.py: реактивный веб-интерфейс для управления БД
+- Страницы: Dashboard, Синхронизация, Товары, Цены, Логи, Настройки
+- Фильтры, поиск, прогресс-бары, метрики
+- database/WEB_INTERFACE.md: документация по интерфейсу
+
 Файлы:
 - database/schema.sql (800+ строк SQL)
 - database/queries.sql (500+ строк примеров)
 - database/README.md (полная документация)
 - database/SETUP.md (инструкция)
+- database/WEB_INTERFACE.md (документация веб-интерфейса)
 - database/db_client.py (Python клиент)
 - database/integrations/content_cards_db.py
 - database/integrations/discounts_prices_db.py
 - database/main_sync.py (главный скрипт)
-- requirements.txt (обновлен)
+- database/web_interface.py (веб-интерфейс Streamlit)
+- requirements.txt (обновлен: добавлен streamlit)
 - DATABASE_INTEGRATION.md (сводка)
 

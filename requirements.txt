@@ -9,3 +9,6 @@ google-api-python-client==2.108.0
 # Supabase для работы с БД
 supabase==2.3.0
 postgrest-py==0.13.0
+
+# Веб-интерфейс
+streamlit==1.31.0
