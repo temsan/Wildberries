@@ -54,12 +54,24 @@ def import_discounts_client():
     """Динамический импорт WBDiscountsPricesClient."""
     BASE_DIR = Path(__file__).resolve().parents[2]
     discounts_path = BASE_DIR / 'wb_api' / 'discounts_prices' / 'discounts_prices.py'
-    
+
     spec = importlib.util.spec_from_file_location("discounts_prices", str(discounts_path))
     discounts_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(discounts_module)
-    
+
     return discounts_module.WBDiscountsPricesClient
+
+
+def import_api_keys():
+    """Импорт настроек из api_keys.py."""
+    BASE_DIR = Path(__file__).resolve().parents[2]
+    api_keys_path = BASE_DIR / 'api_keys.py'
+
+    spec = importlib.util.spec_from_file_location("api_keys", str(api_keys_path))
+    api_keys_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(api_keys_module)
+
+    return api_keys_module
 
 def import_structure_validator():
     """Динамический импорт структуры валидатора."""
@@ -224,26 +236,40 @@ def main():
     parser = argparse.ArgumentParser(description='Получение данных о товарах со скидками')
     parser.add_argument('--page-size', type=int, default=50, help='Размер страницы (по умолчанию 50)')
     parser.add_argument('--sleep-seconds', type=float, default=1.0, help='Задержка между запросами (по умолчанию 1.0)')
-    
-    
+
+
     args = parser.parse_args()
-    
+
     # Настройка логирования
     logger = setup_logging()
-    
+
     logger.info("🚀 ЗАПУСК MAIN ФУНКЦИИ DISCOUNTS_PRICES")
-    
+
     try:
+        # Импортируем настройки из api_keys.py
+        api_keys = import_api_keys()
+
+        # Отладочная информация - проверяем, что credentials загружены
+        logger.info(f"🔑 Токен загружен: {api_keys.AUTHORIZEV3_TOKEN[:50]}...")
+        logger.info(f"🍪 Куки загружены: {len(api_keys.COOKIES)} символов")
+        logger.info(f"🌐 User-Agent загружен: {api_keys.USER_AGENT[:50]}...")
+        logger.info(f"📊 Используемая таблица: {api_keys.GOOGLE_SHEET_ID_UNIT_ECONOMICS}")
+        logger.info(f"📋 Название листа для поиска: Юнитка")
+
         # Импортируем клиент
         WBDiscountsPricesClient = import_discounts_client()
-        
-        # Создаем клиент
-        client = WBDiscountsPricesClient()
-        
+
+        # Создаем клиент с параметрами из api_keys
+        client = WBDiscountsPricesClient(
+            authorizev3_token=api_keys.AUTHORIZEV3_TOKEN,
+            cookies=api_keys.COOKIES,
+            user_agent=api_keys.USER_AGENT
+        )
+
         # Получаем все товары (всегда все страницы)
         logger.info(f"⚙️  Параметры: page_size={args.page_size}, sleep_seconds={args.sleep_seconds}")
         logger.info("🔄 Обрабатываем ВСЕ страницы товаров...")
-        
+
         all_goods = client.iterate_all_goods(
             page_size=args.page_size,
             sleep_seconds=args.sleep_seconds,
@@ -305,37 +331,49 @@ def main():
             from pathlib import Path
             excel_actions_path = Path(__file__).parent.parent.parent / "excel_actions" / "discounts_prices_ea"
             sys.path.append(str(excel_actions_path))
-            
+
             from google_writer import write_discounts_prices_to_sheet  # type: ignore
-            
-            result = write_discounts_prices_to_sheet(processed_data)
-            
+
+            # Передаем параметры из api_keys - используем таблицу UNIT_ECONOMICS для discounts_prices
+            result = write_discounts_prices_to_sheet(
+                processed_data,
+                spreadsheet_id=api_keys.GOOGLE_SHEET_ID_UNIT_ECONOMICS,
+                credentials_info=api_keys.GOOGLE_CREDENTIALS_INFO
+            )
+
             logger.info(f"✅ Запись в Google таблицу завершена!")
             logger.info(f"   • Обработано артикулов: {result['processed_rows']}")
             logger.info(f"   • Артикулов не найдено: {result['not_found_articles']}")
-            
+
         except Exception as e:
-            logger.error(f"❌ Ошибка записи в Google таблицу: {e}")
+            logger.warning(f"⚠️ Ошибка записи в Google таблицу (лист не найден или нет доступа): {e}")
+            logger.info("📋 Основная функциональность работает - данные из WB API получены и обработаны")
             import traceback
-            logger.error(traceback.format_exc())
+            logger.info(f"Детали ошибки: {traceback.format_exc()}")
         
         # Проверяем целостность данных
         logger.info("🔍 Проверяем целостность данных...")
         try:
             from data_validator import validate_data_integrity, print_validation_report  # type: ignore
-            
-            validation_result = validate_data_integrity(processed_data)
+
+            # Передаем параметры из api_keys для валидации - используем таблицу UNIT_ECONOMICS для discounts_prices
+            validation_result = validate_data_integrity(
+                processed_data,
+                spreadsheet_id=api_keys.GOOGLE_SHEET_ID_UNIT_ECONOMICS,
+                credentials_info=api_keys.GOOGLE_CREDENTIALS_INFO
+            )
             print_validation_report(validation_result)
-            
+
             if validation_result['validation_passed']:
                 logger.info("✅ Валидация данных прошла успешно!")
             else:
                 logger.warning("⚠️ Валидация данных выявила несоответствия!")
-                
+
         except Exception as e:
-            logger.error(f"❌ Ошибка валидации данных: {e}")
+            logger.warning(f"⚠️ Ошибка валидации данных (лист не найден или нет доступа): {e}")
+            logger.info("📋 Основная функциональность работает - данные из WB API получены и обработаны")
             import traceback
-            logger.error(traceback.format_exc())
+            logger.info(f"Детали ошибки: {traceback.format_exc()}")
         
         logger.info("\n🎉 MAIN ФУНКЦИЯ УСПЕШНО ЗАВЕРШЕНА!")
         

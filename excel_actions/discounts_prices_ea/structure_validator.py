@@ -16,7 +16,7 @@ from typing import Any, Dict, List
 import importlib.util
 
 # Динамически импортируем schema_utils по абсолютному пути
-_SCHEMAS_DIR = Path(__file__).resolve().parents[2] / "excel_actions" / "schemas"
+_SCHEMAS_DIR = Path(__file__).resolve().parents[1] / "utils" / "schemas"
 _SCHEMA_UTILS_PATH = _SCHEMAS_DIR / "schema_utils.py"
 _spec = importlib.util.spec_from_file_location("schema_utils", str(_SCHEMA_UTILS_PATH))
 schema_utils = importlib.util.module_from_spec(_spec)
@@ -43,7 +43,7 @@ def validate_response_structure(response_data: Dict[str, Any]) -> tuple[bool, st
     """
     
     # Загружаем эталонную схему
-    schema_path = Path(__file__).parent.parent.parent / "excel_actions" / "schemas" / "discounts_prices.schema.json"
+    schema_path = Path(__file__).parent.parent / "utils" / "schemas" / "discounts_prices.schema.json"
     schema = load_json(str(schema_path))
     expected_structure = schema["response_structure"]
     
@@ -95,7 +95,7 @@ def validate_data_structure(data: Dict[str, Any]) -> tuple[bool, str]:
         tuple[bool, str]: (True если корректна, детальная информация об ошибках)
     """
     
-    schema_path = Path(__file__).parent.parent.parent / "excel_actions" / "schemas" / "discounts_prices.schema.json"
+    schema_path = Path(__file__).parent.parent / "utils" / "schemas" / "discounts_prices.schema.json"
     schema = load_json(str(schema_path))
     expected_structure = schema["data_structure"]
     
@@ -144,7 +144,7 @@ def validate_critical_fields(item: Dict[str, Any], item_index: int = 0) -> tuple
         tuple[bool, str]: (True если корректны, детальная информация об ошибках)
     """
     
-    schema_path = Path(__file__).parent.parent.parent / "excel_actions" / "schemas" / "discounts_prices.schema.json"
+    schema_path = Path(__file__).parent.parent / "utils" / "schemas" / "discounts_prices.schema.json"
     schema = load_json(str(schema_path))
     critical_fields = schema["listGoods_item_critical"]
     
@@ -181,7 +181,7 @@ def validate_optional_fields(item: Dict[str, Any]) -> List[str]:
         List[str]: Список предупреждений (если есть)
     """
     
-    schema_path = Path(__file__).parent.parent.parent / "excel_actions" / "schemas" / "discounts_prices.schema.json"
+    schema_path = Path(__file__).parent.parent / "utils" / "schemas" / "discounts_prices.schema.json"
     schema = load_json(str(schema_path))
     optional_fields = schema["listGoods_item_optional"]
     

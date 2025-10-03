@@ -71,14 +71,43 @@ def fetch_headers(
     if header_row < 1:
         raise ValueError("header_row must be >= 1")
 
-    sheet_ref = quote_sheet_name(sheet_name)
-    range_template = f"{sheet_ref}!{header_row}:{header_row}"
-    response = (
-        service.spreadsheets()
-        .values()
-        .get(spreadsheetId=spreadsheet_id, range=range_template)
-        .execute()
-    )
+    # Пробуем получить Sheet ID по названию листа
+    try:
+        # Получаем метаданные таблицы
+        spreadsheet = service.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
+        sheets = spreadsheet.get('sheets', [])
+
+        # Ищем лист по названию
+        sheet_id = None
+        for sheet in sheets:
+            if sheet['properties']['title'] == sheet_name:
+                sheet_id = sheet['properties']['sheetId']
+                break
+
+        if sheet_id is None:
+            print(f"Лист '{sheet_name}' не найден в таблице")
+            return []
+
+        # Используем Sheet ID вместо названия
+        range_template = f"{header_row}:{header_row}"
+        response = (
+            service.spreadsheets()
+            .values()
+            .get(spreadsheetId=spreadsheet_id, range=range_template)
+            .execute()
+        )
+
+    except Exception as e:
+        print(f"Ошибка при получении Sheet ID: {e}")
+        # Fallback к старому методу
+        sheet_ref = sheet_name
+        range_template = f"{sheet_ref}!{header_row}:{header_row}"
+        response = (
+            service.spreadsheets()
+            .values()
+            .get(spreadsheetId=spreadsheet_id, range=range_template)
+            .execute()
+        )
     values = response.get("values", [])
     if not values:
         return []

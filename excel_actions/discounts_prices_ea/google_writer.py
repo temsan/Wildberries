@@ -66,13 +66,20 @@ DISCOUNTS_PRICES_HEADER_ALIASES = header_config.DISCOUNTS_PRICES_HEADER_ALIASES
 DATA_COLUMN_KEYS = header_config.DATA_COLUMN_KEYS
 
 
-def _get_service():
+def _get_service(credentials_info=None):
     """Получает сервис Google Sheets API."""
     from google.oauth2.service_account import Credentials
     from googleapiclient.discovery import build
 
     scopes = ['https://www.googleapis.com/auth/spreadsheets']
-    credentials = Credentials.from_service_account_file(GOOGLE_CREDENTIALS_FILE, scopes=scopes)
+
+    if credentials_info:
+        # Используем переданные credentials
+        credentials = Credentials.from_service_account_info(credentials_info, scopes=scopes)
+    else:
+        # Fallback к старому методу с файлом
+        credentials = Credentials.from_service_account_file(GOOGLE_CREDENTIALS_FILE, scopes=scopes)
+
     return build('sheets', 'v4', credentials=credentials)
 
 
@@ -159,6 +166,7 @@ def write_discounts_prices_to_sheet(
     delay_between_requests: float = 1.2,  # Задержка между запросами в секундах
     # ============================================
     spreadsheet_id: str = GOOGLE_SHEET_ID_UNIT_ECONOMICS,  # ID Google таблицы (из api_keys.py)
+    credentials_info: Dict[str, Any] = None,  # Google credentials (из api_keys.py)
 ) -> Dict[str, int]:
     """
     Записывает данные discounts_prices в Google таблицу.
@@ -206,7 +214,7 @@ def write_discounts_prices_to_sheet(
     
     print(f"🔄 Начинаем запись данных в лист '{sheet_name}'...")
     
-    service = _get_service()
+    service = _get_service(credentials_info)
     
     # === Подготовка header map ===
     header_map = load_header_map(
@@ -397,7 +405,7 @@ def get_sheet_info(spreadsheet_id: str = GOOGLE_SHEET_ID_UNIT_ECONOMICS) -> List
     Returns:
         List[Dict]: Список листов с их ID и названиями
     """
-    service = _get_service()
+    service = _get_service(credentials_info)
     sheet_metadata = service.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
     sheets = sheet_metadata.get('sheets', [])
     

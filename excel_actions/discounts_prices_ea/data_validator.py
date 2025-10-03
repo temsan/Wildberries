@@ -46,13 +46,20 @@ DISCOUNTS_PRICES_HEADER_ALIASES = header_config.DISCOUNTS_PRICES_HEADER_ALIASES
 DATA_COLUMN_KEYS = header_config.DATA_COLUMN_KEYS
 
 
-def _get_service():
+def _get_service(credentials_info=None):
     """Получает сервис Google Sheets API."""
     from google.oauth2.service_account import Credentials
     from googleapiclient.discovery import build
 
     scopes = ['https://www.googleapis.com/auth/spreadsheets']
-    credentials = Credentials.from_service_account_file(GOOGLE_CREDENTIALS_FILE, scopes=scopes)
+
+    if credentials_info:
+        # Используем переданные credentials
+        credentials = Credentials.from_service_account_info(credentials_info, scopes=scopes)
+    else:
+        # Fallback к старому методу с файлом
+        credentials = Credentials.from_service_account_file(GOOGLE_CREDENTIALS_FILE, scopes=scopes)
+
     return build('sheets', 'v4', credentials=credentials)
 
 
@@ -398,6 +405,7 @@ def validate_data_integrity(
     use_batch_reading: bool = True,  # Использовать batch-чтение (рекомендуется)
     # ============================================
     spreadsheet_id: str = GOOGLE_SHEET_ID_UNIT_ECONOMICS,
+    credentials_info: Dict[str, Any] = None,  # Google credentials (из api_keys.py)
 ) -> Dict[str, Any]:
     """
     Проверяет целостность данных между API и Google таблицей.
@@ -428,7 +436,7 @@ def validate_data_integrity(
     print(f"🔍 Начинаем проверку целостности данных в листе '{sheet_name}'...")
     print(f"🔧 Режим: {'Batch-чтение' if use_batch_reading else 'Построчное чтение'}")
     
-    service = _get_service()
+    service = _get_service(credentials_info)
     
     # Подготавливаем карту заголовков
     header_map = load_header_map(
