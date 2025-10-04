@@ -130,8 +130,8 @@ with st.sidebar:
 # DASHBOARD
 # =============================================================================
 if page == "📊 Dashboard":
-    st.title("📊 Dashboard")
-
+    st.title("📊 WB API Dashboard")
+    
     # Инициализируем session state
     if not init_session_state():
         st.error("❌ БД не подключена. Проверьте настройки.")
@@ -143,94 +143,361 @@ if page == "📊 Dashboard":
 
     db = st.session_state.db_client
     
+    # Выбор шаблона дашборда
+    st.sidebar.markdown("---")
+    dashboard_template = st.sidebar.selectbox(
+        "📊 Шаблон дашборда",
+        [
+            "Общий обзор",
+            "Товарооборот (Остатки)",
+            "Юнит-экономика (Цены)",
+            "Финансы (ОПиУ)",
+            "Логистика"
+        ]
+    )
+    
     # Кнопка обновления
     col1, col2 = st.columns([6, 1])
     with col2:
         if st.button("🔄 Обновить"):
             st.rerun()
     
-    # Основные метрики
-    st.subheader("📈 Основные метрики")
-    
     try:
         products = db.get_active_products()
         barcodes = db.get_active_barcodes()
         products_with_prices = db.get_products_with_prices()
         
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
-            st.metric("Активных товаров", len(products))
-        with col2:
-            st.metric("Активных баркодов", len(barcodes))
-        with col3:
-            st.metric("Товаров с ценами", len(products_with_prices))
-        with col4:
-            coverage = (len(products_with_prices) / len(products) * 100) if products else 0
-            st.metric("Покрытие ценами", f"{coverage:.1f}%")
-        
-        st.divider()
-        
-        # Последние операции
-        st.subheader("📝 Последние операции")
-        
-        logs = db.get_recent_logs(limit=10)
-        if logs:
-            logs_df = pd.DataFrame(logs)
-            logs_df['timestamp'] = pd.to_datetime(logs_df['timestamp']).dt.strftime('%Y-%m-%d %H:%M:%S')
+        # =============================================================================
+        # ШАБЛОН: ОБЩИЙ ОБЗОР
+        # =============================================================================
+        if dashboard_template == "Общий обзор":
+            st.markdown("### 📈 Основные метрики")
             
-            # Форматирование статуса
-            def format_status(status):
-                if status == 'success':
-                    return '✅ Успешно'
-                elif status == 'warning':
-                    return '⚠️ Предупреждение'
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                st.metric(
+                    "📦 Активных товаров",
+                    len(products),
+                    help="Количество активных товаров в базе"
+                )
+            with col2:
+                st.metric(
+                    "🏷️ Активных баркодов",
+                    len(barcodes),
+                    help="Количество уникальных баркодов (SKU)"
+                )
+            with col3:
+                st.metric(
+                    "💰 Товаров с ценами",
+                    len(products_with_prices),
+                    help="Товары с установленными ценами"
+                )
+            with col4:
+                coverage = (len(products_with_prices) / len(products) * 100) if products else 0
+                st.metric(
+                    "📊 Покрытие ценами",
+                    f"{coverage:.1f}%",
+                    help="Процент товаров с установленными ценами"
+                )
+            
+            st.divider()
+            
+            # Финансовые метрики
+            st.markdown("### 💵 Финансовые показатели")
+            
+            if products_with_prices:
+                total_price = sum(p.get('price', 0) or 0 for p in products_with_prices)
+                avg_price = total_price / len(products_with_prices) if products_with_prices else 0
+                avg_discount = sum(p.get('discount', 0) or 0 for p in products_with_prices) / len(products_with_prices) if products_with_prices else 0
+                
+                col1, col2, col3, col4 = st.columns(4)
+                
+                with col1:
+                    st.metric("💰 Средняя цена", f"{avg_price:,.2f} ₽")
+                with col2:
+                    st.metric("🏷️ Средняя скидка", f"{avg_discount:.1f}%")
+                with col3:
+                    max_price = max((p.get('price', 0) or 0 for p in products_with_prices), default=0)
+                    st.metric("📈 Макс. цена", f"{max_price:,.2f} ₽")
+                with col4:
+                    min_price = min((p.get('price', 0) or 0 for p in products_with_prices if p.get('price', 0)), default=0)
+                    st.metric("📉 Мин. цена", f"{min_price:,.2f} ₽")
+            else:
+                st.info("📊 Нет данных о ценах. Выполните синхронизацию цен.")
+            
+            st.divider()
+            
+            # Последние операции
+            st.markdown("### 📝 Последние операции")
+            
+            logs = db.get_recent_logs(limit=10)
+            if logs:
+                logs_df = pd.DataFrame(logs)
+                logs_df['timestamp'] = pd.to_datetime(logs_df['timestamp']).dt.strftime('%Y-%m-%d %H:%M:%S')
+                
+                def format_status(status):
+                    if status == 'success':
+                        return '✅ Успешно'
+                    elif status == 'warning':
+                        return '⚠️ Предупреждение'
+                    else:
+                        return '❌ Ошибка'
+                
+                logs_df['status_formatted'] = logs_df['status'].apply(format_status)
+                
+                st.dataframe(
+                    logs_df[['timestamp', 'operation_type', 'status_formatted', 'records_processed', 'records_failed']].rename(columns={
+                        'timestamp': 'Время',
+                        'operation_type': 'Операция',
+                        'status_formatted': 'Статус',
+                        'records_processed': 'Обработано',
+                        'records_failed': 'Ошибок'
+                    }),
+                    use_container_width=True,
+                    hide_index=True
+                )
+            else:
+                st.info("📋 Нет записей в логах")
+            
+            st.divider()
+            
+            # Топ товаров
+            st.markdown("### 💎 Топ товаров")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("**💰 Самые дорогие**")
+                if products_with_prices:
+                    top_expensive = sorted(products_with_prices, key=lambda x: x.get('price', 0) or 0, reverse=True)[:5]
+                    for idx, item in enumerate(top_expensive, 1):
+                        brand = item.get('brand', 'N/A')
+                        price = item.get('price', 0)
+                        vendor_code = item.get('vendor_code', 'N/A')
+                        st.write(f"{idx}. **{brand}** ({vendor_code}) - {price:,.2f} ₽")
                 else:
-                    return '❌ Ошибка'
+                    st.info("Нет данных")
             
-            logs_df['status_formatted'] = logs_df['status'].apply(format_status)
+            with col2:
+                st.markdown("**🏷️ Максимальные скидки**")
+                if products_with_prices:
+                    top_discounts = sorted(products_with_prices, key=lambda x: x.get('discount', 0) or 0, reverse=True)[:5]
+                    for idx, item in enumerate(top_discounts, 1):
+                        brand = item.get('brand', 'N/A')
+                        discount = item.get('discount', 0)
+                        vendor_code = item.get('vendor_code', 'N/A')
+                        st.write(f"{idx}. **{brand}** ({vendor_code}) - {discount}%")
+                else:
+                    st.info("Нет данных")
+        
+        # =============================================================================
+        # ШАБЛОН: ТОВАРООБОРОТ (ОСТАТКИ)
+        # =============================================================================
+        elif dashboard_template == "Товарооборот (Остатки)":
+            st.markdown("### 📦 Товарооборот и остатки на складах")
+            st.info("🚧 Функционал остатков будет добавлен после интеграции Warehouse API")
             
-            st.dataframe(
-                logs_df[['timestamp', 'operation_type', 'status_formatted', 'records_processed', 'records_failed']].rename(columns={
-                    'timestamp': 'Время',
-                    'operation_type': 'Операция',
-                    'status_formatted': 'Статус',
-                    'records_processed': 'Обработано',
-                    'records_failed': 'Ошибок'
-                }),
-                use_container_width=True,
-                hide_index=True
-            )
-        else:
-            st.info("Нет записей в логах")
+            # Метрики товарооборота
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                st.metric("📦 Всего товаров", len(products))
+            with col2:
+                st.metric("🏷️ Всего SKU", len(barcodes))
+            with col3:
+                st.metric("🏪 Складов", "-", help="Будет доступно после синхронизации")
+            with col4:
+                st.metric("📊 Оборачиваемость", "-", help="Дней на складе")
+            
+            st.divider()
+            
+            st.markdown("### 📊 Метрики логистики")
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("📦 Остатки на складе", "-", help="Общее кол-во единиц")
+            with col2:
+                st.metric("🚚 В пути", "-", help="Товары в транзите")
+            with col3:
+                st.metric("📐 Объем (литры)", "-", help="Суммарный литраж за 14 дней")
+            
+            st.divider()
+            
+            st.markdown("### 💰 Стоимость логистики")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.metric("🏪 Платное хранение", "-", help="Стоимость хранения")
+            with col2:
+                st.metric("📥 Платная приемка", "-", help="Стоимость приемки")
         
-        st.divider()
-        
-        # Топ товаров по ценам
-        st.subheader("💎 Топ товаров")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("**Самые дорогие**")
+        # =============================================================================
+        # ШАБЛОН: ЮНИТ-ЭКОНОМИКА (ЦЕНЫ)
+        # =============================================================================
+        elif dashboard_template == "Юнит-экономика (Цены)":
+            st.markdown("### 💰 Юнит-экономика и ценообразование")
+            
             if products_with_prices:
-                top_expensive = sorted(products_with_prices, key=lambda x: x.get('price', 0) or 0, reverse=True)[:5]
-                for idx, item in enumerate(top_expensive, 1):
-                    st.write(f"{idx}. {item.get('brand', 'N/A')} - {item.get('price', 0):.2f} ₽")
+                # Основные метрики цен
+                col1, col2, col3, col4 = st.columns(4)
+                
+                total_price = sum(p.get('price', 0) or 0 for p in products_with_prices)
+                avg_price = total_price / len(products_with_prices)
+                avg_discount = sum(p.get('discount', 0) or 0 for p in products_with_prices) / len(products_with_prices)
+                avg_attractive = sum(p.get('attractive_price', 0) or 0 for p in products_with_prices) / len([p for p in products_with_prices if p.get('attractive_price')])
+                
+                with col1:
+                    st.metric("💵 Средняя цена", f"{avg_price:,.2f} ₽")
+                with col2:
+                    st.metric("🏷️ Средняя скидка", f"{avg_discount:.1f}%")
+                with col3:
+                    st.metric("✨ Привлек. цена", f"{avg_attractive:,.2f} ₽" if avg_attractive else "-")
+                with col4:
+                    st.metric("📊 Товаров с ценами", len(products_with_prices))
+                
+                st.divider()
+                
+                # Расчет маржинальности (упрощенный)
+                st.markdown("### 📊 Анализ маржинальности")
+                
+                st.info("💡 **Формула маржи**: (Цена - Себестоимость - Комиссия WB - Логистика) / Цена × 100%")
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.metric("📈 Средняя маржа", "-", help="Будет рассчитана после добавления себестоимости")
+                with col2:
+                    st.metric("💰 Комиссия WB", "~5-15%", help="Зависит от категории (с июня 2025 +5%)")
+                with col3:
+                    st.metric("🎯 ROI", "-", help="Рентабельность инвестиций")
+                
+                st.divider()
+                
+                # Распределение цен
+                st.markdown("### 📊 Распределение цен")
+                
+                prices = [p.get('price', 0) or 0 for p in products_with_prices]
+                
+                if prices:
+                    price_ranges = {
+                        "До 500 ₽": len([p for p in prices if p < 500]),
+                        "500-1000 ₽": len([p for p in prices if 500 <= p < 1000]),
+                        "1000-2000 ₽": len([p for p in prices if 1000 <= p < 2000]),
+                        "2000-5000 ₽": len([p for p in prices if 2000 <= p < 5000]),
+                        "5000+ ₽": len([p for p in prices if p >= 5000]),
+                    }
+                    
+                    st.bar_chart(price_ranges)
+                
+                st.divider()
+                
+                # Топ по маржинальности (упрощенно по скидкам)
+                st.markdown("### 💎 Товары с максимальной скидкой")
+                
+                top_discounts = sorted(products_with_prices, key=lambda x: x.get('discount', 0) or 0, reverse=True)[:10]
+                
+                discount_data = []
+                for item in top_discounts:
+                    discount_data.append({
+                        'Бренд': item.get('brand', 'N/A'),
+                        'Артикул': item.get('vendor_code', 'N/A'),
+                        'Цена': f"{item.get('price', 0):,.2f} ₽",
+                        'Скидка': f"{item.get('discount', 0)}%"
+                    })
+                
+                st.dataframe(discount_data, use_container_width=True, hide_index=True)
+            
             else:
-                st.info("Нет данных")
+                st.warning("📊 Нет данных о ценах. Выполните синхронизацию цен.")
         
-        with col2:
-            st.markdown("**Максимальные скидки**")
-            if products_with_prices:
-                top_discounts = sorted(products_with_prices, key=lambda x: x.get('discount', 0) or 0, reverse=True)[:5]
-                for idx, item in enumerate(top_discounts, 1):
-                    st.write(f"{idx}. {item.get('brand', 'N/A')} - {item.get('discount', 0)}%")
-            else:
-                st.info("Нет данных")
+        # =============================================================================
+        # ШАБЛОН: ФИНАНСЫ (ОПиУ)
+        # =============================================================================
+        elif dashboard_template == "Финансы (ОПиУ)":
+            st.markdown("### 💼 Финансовый отчет (ОПиУ)")
+            st.info("🚧 Полный функционал ОПиУ будет добавлен после интеграции финансовых отчетов WB API")
+            
+            # Основные финансовые показатели
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                st.metric("💰 Выручка", "-", help="Сумма выкупов")
+            with col2:
+                st.metric("💸 Затраты", "-", help="Логистика + хранение + реклама")
+            with col3:
+                st.metric("📈 Прибыль", "-", help="Выручка - Затраты")
+            with col4:
+                st.metric("📊 Маржа", "-", help="Прибыль / Выручка × 100%")
+            
+            st.divider()
+            
+            st.markdown("### 📊 Структура затрат")
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("🏪 Хранение", "-", help="Платное хранение")
+            with col2:
+                st.metric("🚚 Логистика", "-", help="Доставка и возвраты")
+            with col3:
+                st.metric("📢 Реклама", "-", help="Расходы на РНП")
+            
+            st.divider()
+            
+            st.markdown("### 📈 Показатели эффективности")
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("🎯 ROI", "-", help="Return on Investment")
+            with col2:
+                st.metric("🔄 Оборачиваемость", "-", help="Выручка / Средние остатки")
+            with col3:
+                st.metric("📦 Средний чек", "-", help="Выручка / Кол-во заказов")
+        
+        # =============================================================================
+        # ШАБЛОН: ЛОГИСТИКА
+        # =============================================================================
+        elif dashboard_template == "Логистика":
+            st.markdown("### 🚚 Логистика и склад")
+            st.info("🚧 Функционал логистики будет добавлен после интеграции Warehouse API")
+            
+            # Метрики склада
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                st.metric("📦 На складе WB", "-", help="Текущие остатки")
+            with col2:
+                st.metric("🚚 В пути", "-", help="Товары в транзите")
+            with col3:
+                st.metric("📐 Объем (литры)", "-", help="Суммарный литраж")
+            with col4:
+                st.metric("⏱️ Средний срок", "-", help="Дней на складе")
+            
+            st.divider()
+            
+            st.markdown("### 💰 Стоимость логистики")
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("💸 Хранение (день)", "-", help="Стоимость за день")
+            with col2:
+                st.metric("📥 Приемка", "-", help="Стоимость приемки")
+            with col3:
+                st.metric("↩️ Возвраты", "-", help="Стоимость возвратной логистики")
+            
+            st.divider()
+            
+            st.markdown("### 📊 Оборачиваемость по категориям")
+            
+            st.info("Будет доступно после синхронизации остатков и продаж")
     
     except Exception as e:
-        st.error(f"Ошибка загрузки данных: {e}")
+        st.error(f"❌ Ошибка загрузки данных: {e}")
 
 # =============================================================================
 # СИНХРОНИЗАЦИЯ
