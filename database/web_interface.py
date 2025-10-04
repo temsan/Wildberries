@@ -1,6 +1,6 @@
 """
 Веб-интерфейс для управления БД Wildberries (Streamlit).
-Запуск: streamlit run database/web_interface.py
+Автозапуск: python database/web_interface.py
 """
 
 import streamlit as st
@@ -55,21 +55,28 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Инициализация session state
-if 'db_client' not in st.session_state:
+# Инициализация session state (только если Streamlit контекст активен)
+def init_session_state():
     try:
-        st.session_state.db_client = get_client()
-        st.session_state.db_connected = True
+        if 'db_client' not in st.session_state:
+            st.session_state.db_client = get_client()
+            st.session_state.db_connected = True
+        return True
     except Exception as e:
-        st.session_state.db_connected = False
-        st.session_state.db_error = str(e)
+        if 'db_connected' not in st.session_state:
+            st.session_state.db_connected = False
+            st.session_state.db_error = str(e)
+        return False
 
 # Боковая панель
 with st.sidebar:
     st.title("🛠️ WB API Dashboard")
-    
+
+    # Инициализируем session state для боковой панели
+    init_session_state()
+
     # Статус подключения
-    if st.session_state.db_connected:
+    if st.session_state.get('db_connected', False):
         st.success("✅ БД подключена")
     else:
         st.error("❌ Ошибка подключения к БД")
@@ -97,11 +104,16 @@ with st.sidebar:
 # =============================================================================
 if page == "📊 Dashboard":
     st.title("📊 Dashboard")
-    
+
+    # Инициализируем session state
+    if not init_session_state():
+        st.error("❌ БД не подключена. Проверьте настройки.")
+        st.stop()
+
     if not st.session_state.db_connected:
         st.error("❌ БД не подключена. Проверьте настройки.")
         st.stop()
-    
+
     db = st.session_state.db_client
     
     # Кнопка обновления
@@ -198,7 +210,12 @@ if page == "📊 Dashboard":
 # =============================================================================
 elif page == "🔄 Синхронизация":
     st.title("🔄 Синхронизация данных")
-    
+
+    # Инициализируем session state
+    if not init_session_state():
+        st.error("❌ БД не подключена. Проверьте настройки.")
+        st.stop()
+
     if not st.session_state.db_connected:
         st.error("❌ БД не подключена. Проверьте настройки.")
         st.stop()
@@ -336,11 +353,16 @@ elif page == "🔄 Синхронизация":
 # =============================================================================
 elif page == "📦 Товары":
     st.title("📦 Товары")
-    
+
+    # Инициализируем session state
+    if not init_session_state():
+        st.error("❌ БД не подключена. Проверьте настройки.")
+        st.stop()
+
     if not st.session_state.db_connected:
         st.error("❌ БД не подключена. Проверьте настройки.")
         st.stop()
-    
+
     db = st.session_state.db_client
     
     # Фильтры
@@ -456,11 +478,16 @@ elif page == "📦 Товары":
 # =============================================================================
 elif page == "💰 Цены":
     st.title("💰 Цены и скидки")
-    
+
+    # Инициализируем session state
+    if not init_session_state():
+        st.error("❌ БД не подключена. Проверьте настройки.")
+        st.stop()
+
     if not st.session_state.db_connected:
         st.error("❌ БД не подключена. Проверьте настройки.")
         st.stop()
-    
+
     db = st.session_state.db_client
     
     # Фильтры
@@ -567,7 +594,12 @@ elif page == "💰 Цены":
 # =============================================================================
 elif page == "📈 История цен":
     st.title("📈 История изменения цен")
-    
+
+    # Инициализируем session state
+    if not init_session_state():
+        st.error("❌ БД не подключена. Проверьте настройки.")
+        st.stop()
+
     if not st.session_state.db_connected:
         st.error("❌ БД не подключена. Проверьте настройки.")
         st.stop()
@@ -579,11 +611,16 @@ elif page == "📈 История цен":
 # =============================================================================
 elif page == "📝 Логи":
     st.title("📝 Логи операций")
-    
+
+    # Инициализируем session state
+    if not init_session_state():
+        st.error("❌ БД не подключена. Проверьте настройки.")
+        st.stop()
+
     if not st.session_state.db_connected:
         st.error("❌ БД не подключена. Проверьте настройки.")
         st.stop()
-    
+
     db = st.session_state.db_client
     
     # Количество записей
@@ -631,11 +668,16 @@ elif page == "📝 Логи":
 # =============================================================================
 elif page == "⚙️ Настройки":
     st.title("⚙️ Настройки и обслуживание")
-    
+
+    # Инициализируем session state
+    if not init_session_state():
+        st.error("❌ БД не подключена. Проверьте настройки.")
+        st.stop()
+
     if not st.session_state.db_connected:
         st.error("❌ БД не подключена. Проверьте настройки.")
         st.stop()
-    
+
     db = st.session_state.db_client
     
     # Очистка данных
@@ -687,24 +729,13 @@ Key: {db.key[:20]}...{db.key[-20:]}
 
 
 # =============================================================================
-# АВТОЗАПУСК STREAMLIT (если файл запущен напрямую)
+# АВТОЗАПУСК STREAMLIT
 # =============================================================================
 if __name__ == "__main__":
     import subprocess
     import sys
+    import os
 
-    print("🚀 Запуск веб-интерфейса через Streamlit...")
-    print("📱 Откройте браузер по адресу: http://localhost:8501")
-    print("🛑 Для остановки нажмите Ctrl+C")
-
-    try:
-        # Запускаем streamlit run для текущего файла
-        subprocess.run([
-            sys.executable, "-m", "streamlit", "run", __file__
-        ], check=True)
-    except KeyboardInterrupt:
-        print("\n👋 Интерфейс остановлен пользователем")
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Ошибка запуска: {e}")
-        print("💡 Попробуйте запустить вручную: streamlit run database/web_interface.py")
+    # Автозапуск Streamlit без лишнего кода
+    subprocess.run([sys.executable, "-m", "streamlit", "run", __file__], check=True)
 
