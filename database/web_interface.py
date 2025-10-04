@@ -122,6 +122,7 @@ with st.sidebar:
             "💰 Цены",
             "📈 История цен",
             "📝 Логи",
+            "🔧 SQL Запросы",
             "⚙️ Настройки"
         ]
     )
@@ -148,11 +149,11 @@ if page == "📊 Dashboard":
     dashboard_template = st.sidebar.selectbox(
         "📊 Шаблон дашборда",
         [
-            "Общий обзор",
-            "Товарооборот (Остатки)",
-            "Юнит-экономика (Цены)",
-            "Финансы (ОПиУ)",
-            "Логистика"
+            "📈 Общий обзор",
+            "📦 Товарооборот",
+            "💰 Юнит-экономика",
+            "💼 Финансы (ОПиУ)",
+            "🚚 Логистика"
         ]
     )
     
@@ -170,7 +171,7 @@ if page == "📊 Dashboard":
         # =============================================================================
         # ШАБЛОН: ОБЩИЙ ОБЗОР
         # =============================================================================
-        if dashboard_template == "Общий обзор":
+        if dashboard_template == "📈 Общий обзор":
             st.markdown("### 📈 Основные метрики")
             
             col1, col2, col3, col4 = st.columns(4)
@@ -292,52 +293,122 @@ if page == "📊 Dashboard":
                     st.info("Нет данных")
         
         # =============================================================================
-        # ШАБЛОН: ТОВАРООБОРОТ (ОСТАТКИ)
+        # ШАБЛОН: ТОВАРООБОРОТ
         # =============================================================================
-        elif dashboard_template == "Товарооборот (Остатки)":
-            st.markdown("### 📦 Товарооборот и остатки на складах")
-            st.info("🚧 Функционал остатков будет добавлен после интеграции Warehouse API")
+        elif dashboard_template == "📦 Товарооборот":
+            st.markdown("### 📦 Товарооборот и управление запасами")
             
             # Метрики товарооборота
             col1, col2, col3, col4 = st.columns(4)
             
             with col1:
-                st.metric("📦 Всего товаров", len(products))
+                st.metric(
+                    "📦 Всего товаров",
+                    len(products),
+                    help="Количество активных товаров"
+                )
             with col2:
-                st.metric("🏷️ Всего SKU", len(barcodes))
+                st.metric(
+                    "🏷️ Всего SKU",
+                    len(barcodes),
+                    help="Количество уникальных баркодов"
+                )
             with col3:
-                st.metric("🏪 Складов", "-", help="Будет доступно после синхронизации")
+                # Подсчет товаров с ценами как показатель готовности к продаже
+                ready_to_sell = len(products_with_prices)
+                st.metric(
+                    "✅ Готовы к продаже",
+                    ready_to_sell,
+                    help="Товары с установленными ценами"
+                )
             with col4:
-                st.metric("📊 Оборачиваемость", "-", help="Дней на складе")
+                coverage = (ready_to_sell / len(products) * 100) if products else 0
+                st.metric(
+                    "📊 Готовность",
+                    f"{coverage:.0f}%",
+                    help="Процент товаров готовых к продаже"
+                )
             
             st.divider()
             
-            st.markdown("### 📊 Метрики логистики")
+            # Анализ по брендам
+            st.markdown("### 🏷️ Распределение по брендам")
+            
+            if products:
+                # Подсчет товаров по брендам
+                brand_counts = {}
+                for p in products:
+                    brand = p.get('brand', 'Без бренда')
+                    brand_counts[brand] = brand_counts.get(brand, 0) + 1
+                
+                # Топ-5 брендов
+                top_brands = sorted(brand_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+                
+                col1, col2 = st.columns([2, 1])
+                
+                with col1:
+                    # График
+                    brand_data = {brand: count for brand, count in top_brands}
+                    st.bar_chart(brand_data)
+                
+                with col2:
+                    st.markdown("**Топ-5 брендов:**")
+                    for idx, (brand, count) in enumerate(top_brands, 1):
+                        percentage = (count / len(products) * 100)
+                        st.write(f"{idx}. **{brand}**: {count} ({percentage:.1f}%)")
+            else:
+                st.info("📊 Нет данных о товарах")
+            
+            st.divider()
+            
+            # Статус товаров
+            st.markdown("### 📊 Статус товаров")
             
             col1, col2, col3 = st.columns(3)
             
             with col1:
-                st.metric("📦 Остатки на складе", "-", help="Общее кол-во единиц")
+                st.metric(
+                    "✅ С ценами",
+                    len(products_with_prices),
+                    help="Товары готовые к продаже"
+                )
+            
             with col2:
-                st.metric("🚚 В пути", "-", help="Товары в транзите")
+                without_prices = len(products) - len(products_with_prices)
+                st.metric(
+                    "⚠️ Без цен",
+                    without_prices,
+                    help="Требуется установить цены"
+                )
+            
             with col3:
-                st.metric("📐 Объем (литры)", "-", help="Суммарный литраж за 14 дней")
+                # Подсчет товаров со скидками
+                with_discounts = sum(1 for p in products_with_prices if p.get('discount', 0) > 0)
+                st.metric(
+                    "🏷️ Со скидками",
+                    with_discounts,
+                    help="Товары с активными скидками"
+                )
             
             st.divider()
             
-            st.markdown("### 💰 Стоимость логистики")
+            # Рекомендации
+            st.markdown("### 💡 Рекомендации")
             
-            col1, col2 = st.columns(2)
+            if without_prices > 0:
+                st.warning(f"⚠️ **{without_prices} товаров без цен.** Установите цены для увеличения ассортимента.")
             
-            with col1:
-                st.metric("🏪 Платное хранение", "-", help="Стоимость хранения")
-            with col2:
-                st.metric("📥 Платная приемка", "-", help="Стоимость приемки")
+            if coverage < 50:
+                st.error("❌ **Низкая готовность к продаже.** Требуется синхронизация цен.")
+            elif coverage < 80:
+                st.info("📊 **Хорошая готовность.** Рекомендуется синхронизировать оставшиеся товары.")
+            else:
+                st.success("✅ **Отличная готовность!** Большинство товаров готовы к продаже.")
         
         # =============================================================================
         # ШАБЛОН: ЮНИТ-ЭКОНОМИКА (ЦЕНЫ)
         # =============================================================================
-        elif dashboard_template == "Юнит-экономика (Цены)":
+        elif dashboard_template == "💰 Юнит-экономика":
             st.markdown("### 💰 Юнит-экономика и ценообразование")
             
             if products_with_prices:
@@ -416,52 +487,151 @@ if page == "📊 Dashboard":
         # =============================================================================
         # ШАБЛОН: ФИНАНСЫ (ОПиУ)
         # =============================================================================
-        elif dashboard_template == "Финансы (ОПиУ)":
+        elif dashboard_template == "💼 Финансы (ОПиУ)":
             st.markdown("### 💼 Финансовый отчет (ОПиУ)")
-            st.info("🚧 Полный функционал ОПиУ будет добавлен после интеграции финансовых отчетов WB API")
             
-            # Основные финансовые показатели
-            col1, col2, col3, col4 = st.columns(4)
+            if products_with_prices:
+                # Расчет базовых финансовых показателей на основе данных
+                total_price_value = sum(p.get('price', 0) or 0 for p in products_with_prices)
+                total_discounted = sum(p.get('discounted_price', 0) or 0 for p in products_with_prices)
+                avg_discount = sum(p.get('discount', 0) or 0 for p in products_with_prices) / len(products_with_prices)
+                
+                # Потенциальная выручка (если все товары будут проданы по 1 шт)
+                potential_revenue = total_discounted if total_discounted > 0 else total_price_value
+                
+                # Оценка затрат (примерная комиссия WB 5-15%, берем 10%)
+                wb_commission = potential_revenue * 0.10
+                
+                # Примерная логистика (2-5% от выручки)
+                logistics_cost = potential_revenue * 0.03
+                
+                # Оценка маржи
+                estimated_margin = ((potential_revenue - wb_commission - logistics_cost) / potential_revenue * 100) if potential_revenue > 0 else 0
+                
+                # Основные финансовые показатели
+                col1, col2, col3, col4 = st.columns(4)
+                
+                with col1:
+                    st.metric(
+                        "💰 Потенциальная выручка",
+                        f"{potential_revenue:,.0f} ₽",
+                        help="Сумма цен всех товаров (при продаже по 1 шт)"
+                    )
+                with col2:
+                    st.metric(
+                        "💸 Комиссия WB",
+                        f"{wb_commission:,.0f} ₽",
+                        help="Примерная комиссия маркетплейса (~10%)"
+                    )
+                with col3:
+                    st.metric(
+                        "📈 Чистая выручка",
+                        f"{potential_revenue - wb_commission - logistics_cost:,.0f} ₽",
+                        help="После вычета комиссий и логистики"
+                    )
+                with col4:
+                    st.metric(
+                        "📊 Оценочная маржа",
+                        f"{estimated_margin:.1f}%",
+                        help="Приблизительная маржинальность"
+                    )
+                
+                st.divider()
+                
+                # Структура затрат
+                st.markdown("### 📊 Структура затрат (оценочно)")
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.metric(
+                        "🏪 Комиссия WB",
+                        f"{wb_commission:,.0f} ₽",
+                        f"~{(wb_commission/potential_revenue*100):.1f}%",
+                        help="Комиссия маркетплейса"
+                    )
+                with col2:
+                    st.metric(
+                        "🚚 Логистика",
+                        f"{logistics_cost:,.0f} ₽",
+                        f"~{(logistics_cost/potential_revenue*100):.1f}%",
+                        help="Доставка и возвраты (оценка)"
+                    )
+                with col3:
+                    total_costs = wb_commission + logistics_cost
+                    st.metric(
+                        "💸 Всего затрат",
+                        f"{total_costs:,.0f} ₽",
+                        f"~{(total_costs/potential_revenue*100):.1f}%",
+                        help="Сумма всех затрат"
+                    )
+                
+                st.divider()
+                
+                # Анализ по ценовым сегментам
+                st.markdown("### 💎 Анализ по ценовым сегментам")
+                
+                # Разделение на сегменты
+                premium = [p for p in products_with_prices if (p.get('price', 0) or 0) >= 5000]
+                mid_range = [p for p in products_with_prices if 1000 <= (p.get('price', 0) or 0) < 5000]
+                budget = [p for p in products_with_prices if (p.get('price', 0) or 0) < 1000]
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    premium_value = sum(p.get('price', 0) or 0 for p in premium)
+                    st.metric(
+                        "💎 Премиум (5000+ ₽)",
+                        f"{len(premium)} шт",
+                        f"{premium_value:,.0f} ₽",
+                        help="Товары дороже 5000 ₽"
+                    )
+                
+                with col2:
+                    mid_value = sum(p.get('price', 0) or 0 for p in mid_range)
+                    st.metric(
+                        "📊 Средний (1000-5000 ₽)",
+                        f"{len(mid_range)} шт",
+                        f"{mid_value:,.0f} ₽",
+                        help="Товары от 1000 до 5000 ₽"
+                    )
+                
+                with col3:
+                    budget_value = sum(p.get('price', 0) or 0 for p in budget)
+                    st.metric(
+                        "💰 Бюджет (<1000 ₽)",
+                        f"{len(budget)} шт",
+                        f"{budget_value:,.0f} ₽",
+                        help="Товары дешевле 1000 ₽"
+                    )
+                
+                st.divider()
+                
+                # Рекомендации
+                st.markdown("### 💡 Рекомендации по финансам")
+                
+                if avg_discount > 30:
+                    st.warning(f"⚠️ **Высокая средняя скидка ({avg_discount:.1f}%)** - проверьте целесообразность больших скидок.")
+                
+                if estimated_margin < 15:
+                    st.error("❌ **Низкая маржинальность** - рекомендуется пересмотреть ценообразование или снизить затраты.")
+                elif estimated_margin < 25:
+                    st.info("📊 **Нормальная маржинальность** - есть пространство для оптимизации.")
+                else:
+                    st.success("✅ **Хорошая маржинальность!** Продолжайте в том же духе.")
+                
+                st.info("""
+                **📝 Примечание:** Расчеты являются оценочными и основаны на имеющихся данных о ценах.
+                Для точного ОПиУ необходима интеграция с финансовыми отчетами WB API.
+                """)
             
-            with col1:
-                st.metric("💰 Выручка", "-", help="Сумма выкупов")
-            with col2:
-                st.metric("💸 Затраты", "-", help="Логистика + хранение + реклама")
-            with col3:
-                st.metric("📈 Прибыль", "-", help="Выручка - Затраты")
-            with col4:
-                st.metric("📊 Маржа", "-", help="Прибыль / Выручка × 100%")
-            
-            st.divider()
-            
-            st.markdown("### 📊 Структура затрат")
-            
-            col1, col2, col3 = st.columns(3)
-            
-            with col1:
-                st.metric("🏪 Хранение", "-", help="Платное хранение")
-            with col2:
-                st.metric("🚚 Логистика", "-", help="Доставка и возвраты")
-            with col3:
-                st.metric("📢 Реклама", "-", help="Расходы на РНП")
-            
-            st.divider()
-            
-            st.markdown("### 📈 Показатели эффективности")
-            
-            col1, col2, col3 = st.columns(3)
-            
-            with col1:
-                st.metric("🎯 ROI", "-", help="Return on Investment")
-            with col2:
-                st.metric("🔄 Оборачиваемость", "-", help="Выручка / Средние остатки")
-            with col3:
-                st.metric("📦 Средний чек", "-", help="Выручка / Кол-во заказов")
+            else:
+                st.warning("📊 Нет данных о ценах. Выполните синхронизацию цен для расчета финансовых показателей.")
         
         # =============================================================================
         # ШАБЛОН: ЛОГИСТИКА
         # =============================================================================
-        elif dashboard_template == "Логистика":
+        elif dashboard_template == "🚚 Логистика":
             st.markdown("### 🚚 Логистика и склад")
             st.info("🚧 Функционал логистики будет добавлен после интеграции Warehouse API")
             
@@ -1018,6 +1188,371 @@ elif page == "📝 Логи":
     
     except Exception as e:
         st.error(f"Ошибка загрузки логов: {e}")
+
+# =============================================================================
+# SQL ЗАПРОСЫ
+# =============================================================================
+elif page == "🔧 SQL Запросы":
+    st.title("🔧 SQL Запросы")
+    
+    st.markdown("""
+    Готовые SQL-запросы для работы с базой данных.
+    Используйте их в Python-коде или выполняйте напрямую через Supabase.
+    """)
+    
+    st.divider()
+    
+    # Категории запросов
+    query_category = st.selectbox(
+        "📋 Категория запросов",
+        [
+            "🔍 Основные выборки",
+            "➕ Upsert артикулов",
+            "💰 Upsert цен",
+            "📊 Аналитика и отчеты",
+            "🗑️ Очистка и обслуживание"
+        ]
+    )
+    
+    # =============================================================================
+    # ОСНОВНЫЕ ВЫБОРКИ
+    # =============================================================================
+    if query_category == "🔍 Основные выборки":
+        st.subheader("🔍 Основные выборки данных")
+        
+        # Запрос 1: Активные товары
+        with st.expander("📦 Все активные товары"):
+            st.code("""
+-- Получить все активные товары
+SELECT 
+    p.nm_id,
+    p.vendor_code,
+    p.brand,
+    p.title,
+    p.subject,
+    p.volume,
+    p.updated_at
+FROM products p
+WHERE p.is_active = TRUE
+ORDER BY p.updated_at DESC;
+            """, language="sql")
+            
+            st.markdown("**Использование в Python:**")
+            st.code("""
+products = db.client.table('products') \\
+    .select('*') \\
+    .eq('is_active', True) \\
+    .order('updated_at', desc=True) \\
+    .execute()
+            """, language="python")
+        
+        # Запрос 2: Товары с ценами
+        with st.expander("💰 Товары с ценами"):
+            st.code("""
+-- Получить товары с ценами
+SELECT 
+    p.nm_id,
+    p.vendor_code,
+    p.brand,
+    p.title,
+    ue.price,
+    ue.discounted_price,
+    ue.discount,
+    ue.competitive_price,
+    ue.updated_at as price_updated_at
+FROM products p
+INNER JOIN unit_economics ue ON p.nm_id = ue.nm_id
+WHERE p.is_active = TRUE
+ORDER BY ue.price DESC;
+            """, language="sql")
+            
+            st.markdown("**Использование в Python:**")
+            st.code("""
+products_with_prices = db.get_products_with_prices()
+            """, language="python")
+        
+        # Запрос 3: Активные баркоды
+        with st.expander("🏷️ Активные баркоды"):
+            st.code("""
+-- Получить все активные баркоды с товарами
+SELECT 
+    sa.barcode,
+    sa.vendor_code,
+    sa.size,
+    p.brand,
+    p.title,
+    sa.updated_at
+FROM seller_articles sa
+INNER JOIN products p ON sa.nm_id = p.nm_id
+WHERE sa.is_active = TRUE
+ORDER BY sa.updated_at DESC;
+            """, language="sql")
+            
+            st.markdown("**Использование в Python:**")
+            st.code("""
+barcodes = db.get_active_barcodes()
+            """, language="python")
+    
+    # =============================================================================
+    # UPSERT АРТИКУЛОВ
+    # =============================================================================
+    elif query_category == "➕ Upsert артикулов":
+        st.subheader("➕ Upsert артикулов из Content API")
+        
+        # Запрос 1: Upsert товара
+        with st.expander("📦 Upsert одного товара"):
+            st.code("""
+-- Вставка/обновление товара
+INSERT INTO products (nm_id, vendor_code, brand, title, subject, volume)
+VALUES ($1, $2, $3, $4, $5, $6)
+ON CONFLICT (nm_id) DO UPDATE SET
+    vendor_code = EXCLUDED.vendor_code,
+    brand = EXCLUDED.brand,
+    title = EXCLUDED.title,
+    subject = EXCLUDED.subject,
+    volume = EXCLUDED.volume,
+    updated_at = NOW()
+RETURNING id, nm_id;
+            """, language="sql")
+            
+            st.markdown("**Использование в Python:**")
+            st.code("""
+from database.db_client import get_client
+
+db = get_client()
+result = db.upsert_product(
+    nm_id=12345678,
+    vendor_code='ART-001',
+    brand='MyBrand',
+    title='Товар 1',
+    subject='Футболки',
+    volume=0.5
+)
+            """, language="python")
+        
+        # Запрос 2: Batch upsert
+        with st.expander("📦 Batch upsert товаров"):
+            st.code("""
+-- Массовая вставка/обновление товаров
+INSERT INTO products (nm_id, vendor_code, brand, title, subject, volume)
+VALUES 
+    (12345678, 'ART-001', 'MyBrand', 'Товар 1', 'Футболки', 0.5),
+    (23456789, 'ART-002', 'MyBrand', 'Товар 2', 'Кроссовки', 1.2),
+    (34567890, 'ART-003', 'MyBrand', 'Товар 3', 'Рюкзаки', 2.0)
+ON CONFLICT (nm_id) DO UPDATE SET
+    vendor_code = EXCLUDED.vendor_code,
+    brand = EXCLUDED.brand,
+    title = EXCLUDED.title,
+    subject = EXCLUDED.subject,
+    volume = EXCLUDED.volume,
+    updated_at = NOW();
+            """, language="sql")
+        
+        # Запрос 3: Upsert баркодов
+        with st.expander("🏷️ Upsert баркодов"):
+            st.code("""
+-- Вставка/обновление баркода
+INSERT INTO seller_articles (nm_id, vendor_code, barcode, size)
+VALUES ($1, $2, $3, $4)
+ON CONFLICT (barcode) DO UPDATE SET
+    nm_id = EXCLUDED.nm_id,
+    vendor_code = EXCLUDED.vendor_code,
+    size = EXCLUDED.size,
+    updated_at = NOW()
+RETURNING id, barcode;
+            """, language="sql")
+            
+            st.markdown("**Batch upsert:**")
+            st.code("""
+-- Массовая вставка баркодов
+INSERT INTO seller_articles (nm_id, vendor_code, barcode, size)
+VALUES 
+    (12345678, 'ART-001', '2000000123456', 'M'),
+    (12345678, 'ART-001', '2000000123457', 'L'),
+    (23456789, 'ART-002', '2000000234567', '42')
+ON CONFLICT (barcode) DO UPDATE SET
+    nm_id = EXCLUDED.nm_id,
+    vendor_code = EXCLUDED.vendor_code,
+    size = EXCLUDED.size,
+    updated_at = NOW();
+            """, language="sql")
+    
+    # =============================================================================
+    # UPSERT ЦЕН
+    # =============================================================================
+    elif query_category == "💰 Upsert цен":
+        st.subheader("💰 Upsert цен из Discounts-Prices API")
+        
+        # Запрос 1: Upsert цен
+        with st.expander("💰 Upsert цен одного товара"):
+            st.code("""
+-- Вставка/обновление цен
+INSERT INTO unit_economics (
+    nm_id, vendor_code, price, discounted_price, discount, 
+    discount_on_site, price_after_spp, competitive_price, 
+    is_competitive_price, has_promotions
+)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+ON CONFLICT (nm_id) DO UPDATE SET
+    vendor_code = EXCLUDED.vendor_code,
+    price = EXCLUDED.price,
+    discounted_price = EXCLUDED.discounted_price,
+    discount = EXCLUDED.discount,
+    discount_on_site = EXCLUDED.discount_on_site,
+    price_after_spp = EXCLUDED.price_after_spp,
+    competitive_price = EXCLUDED.competitive_price,
+    is_competitive_price = EXCLUDED.is_competitive_price,
+    has_promotions = EXCLUDED.has_promotions,
+    updated_at = NOW()
+RETURNING nm_id, price_after_spp;
+            """, language="sql")
+        
+        # Запрос 2: История цен
+        with st.expander("📈 Добавление в историю цен"):
+            st.code("""
+-- Сохранение истории изменения цен
+INSERT INTO price_history (
+    nm_id, vendor_code, price, discounted_price, 
+    discount, competitive_price
+)
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING id, nm_id, changed_at;
+            """, language="sql")
+            
+            st.markdown("**Использование в Python:**")
+            st.code("""
+# Автоматически добавляется при обновлении цен через триггер
+db.upsert_unit_economics(
+    nm_id=12345678,
+    price=1000.0,
+    discounted_price=900.0,
+    discount=10
+)
+# История создастся автоматически
+            """, language="python")
+    
+    # =============================================================================
+    # АНАЛИТИКА
+    # =============================================================================
+    elif query_category == "📊 Аналитика и отчеты":
+        st.subheader("📊 Аналитические запросы")
+        
+        # Запрос 1: Топ по ценам
+        with st.expander("💰 Топ-10 самых дорогих товаров"):
+            st.code("""
+-- Топ-10 товаров по цене
+SELECT 
+    p.nm_id,
+    p.vendor_code,
+    p.brand,
+    p.title,
+    ue.price,
+    ue.discount
+FROM products p
+INNER JOIN unit_economics ue ON p.nm_id = ue.nm_id
+WHERE p.is_active = TRUE
+ORDER BY ue.price DESC
+LIMIT 10;
+            """, language="sql")
+        
+        # Запрос 2: Средние показатели
+        with st.expander("📊 Средние показатели по ценам"):
+            st.code("""
+-- Средние показатели
+SELECT 
+    COUNT(*) as total_products,
+    AVG(ue.price) as avg_price,
+    AVG(ue.discount) as avg_discount,
+    MAX(ue.price) as max_price,
+    MIN(ue.price) as min_price
+FROM unit_economics ue
+INNER JOIN products p ON ue.nm_id = p.nm_id
+WHERE p.is_active = TRUE;
+            """, language="sql")
+        
+        # Запрос 3: История изменения цен
+        with st.expander("📈 История изменения цен товара"):
+            st.code("""
+-- История изменения цен конкретного товара
+SELECT 
+    ph.changed_at,
+    ph.price,
+    ph.discounted_price,
+    ph.discount,
+    ph.competitive_price
+FROM price_history ph
+WHERE ph.nm_id = $1
+ORDER BY ph.changed_at DESC
+LIMIT 30;
+            """, language="sql")
+            
+            st.markdown("**Использование в Python:**")
+            st.code("""
+history = db.get_price_history(nm_id=12345678, limit=30)
+            """, language="python")
+    
+    # =============================================================================
+    # ОЧИСТКА
+    # =============================================================================
+    elif query_category == "🗑️ Очистка и обслуживание":
+        st.subheader("🗑️ Очистка и обслуживание БД")
+        
+        # Запрос 1: Очистка логов
+        with st.expander("🧹 Очистка старых логов"):
+            st.code("""
+-- Удалить логи старше 30 дней
+DELETE FROM validation_logs
+WHERE timestamp < NOW() - INTERVAL '30 days'
+RETURNING id;
+            """, language="sql")
+            
+            st.markdown("**Использование в Python:**")
+            st.code("""
+deleted_count = db.cleanup_old_logs(days=30)
+print(f"Удалено записей: {deleted_count}")
+            """, language="python")
+        
+        # Запрос 2: Очистка истории цен
+        with st.expander("🧹 Очистка старой истории цен"):
+            st.code("""
+-- Удалить историю цен старше 90 дней
+DELETE FROM price_history
+WHERE changed_at < NOW() - INTERVAL '90 days'
+RETURNING id;
+            """, language="sql")
+            
+            st.markdown("**Использование в Python:**")
+            st.code("""
+deleted_count = db.cleanup_old_price_history(days=90)
+print(f"Удалено записей: {deleted_count}")
+            """, language="python")
+        
+        # Запрос 3: Деактивация товаров
+        with st.expander("📦 Деактивация неактивных товаров"):
+            st.code("""
+-- Деактивировать товары, не обновлявшиеся более 30 дней
+UPDATE products
+SET is_active = FALSE
+WHERE updated_at < NOW() - INTERVAL '30 days'
+  AND is_active = TRUE
+RETURNING nm_id, vendor_code;
+            """, language="sql")
+    
+    st.divider()
+    
+    # Ссылка на полный файл
+    st.markdown("### 📄 Полный файл запросов")
+    st.info("Все SQL-запросы доступны в файле: `database/queries.sql` (567 строк)")
+    
+    st.markdown("""
+    **Содержит:**
+    - Upsert артикулов и баркодов
+    - Upsert цен и истории
+    - Аналитические запросы
+    - Функции агрегации
+    - Триггеры и процедуры
+    - Примеры использования в Python
+    """)
 
 # =============================================================================
 # НАСТРОЙКИ
