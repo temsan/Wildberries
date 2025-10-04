@@ -3,12 +3,39 @@
 Автозапуск: python database/web_interface.py
 """
 
+# =============================================================================
+# ПРОВЕРКА И АВТОЗАПУСК STREAMLIT
+# =============================================================================
+import sys
+import os
+
+# Проверяем, что НЕ запущено через streamlit
+if __name__ == "__main__" and "streamlit.runtime.scriptrunner" not in sys.modules:
+    import subprocess
+    
+    print("🚀 Запуск веб-интерфейса через Streamlit...")
+    print("📱 Откройте браузер: http://localhost:8501")
+    print()
+    
+    try:
+        # Запускаем streamlit run для этого файла
+        subprocess.run([sys.executable, "-m", "streamlit", "run", __file__], check=True)
+    except KeyboardInterrupt:
+        print("\n👋 Интерфейс остановлен")
+    except Exception as e:
+        print(f"❌ Ошибка запуска: {e}")
+        print("💡 Установите Streamlit: pip install streamlit")
+    
+    sys.exit(0)
+
+# =============================================================================
+# ОСНОВНОЙ КОД ИНТЕРФЕЙСА (выполняется только через streamlit run)
+# =============================================================================
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 import time
 from pathlib import Path
-import sys
 
 # Добавляем корневую директорию в path
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -726,16 +753,3 @@ Key: {db.key[:20]}...{db.key[-20:]}
     - [database/queries.sql](./database/queries.sql) - SQL запросы
     - [Supabase Dashboard](https://app.supabase.com)
     """)
-
-
-# =============================================================================
-# АВТОЗАПУСК STREAMLIT
-# =============================================================================
-if __name__ == "__main__":
-    import subprocess
-    import sys
-    import os
-
-    # Автозапуск Streamlit без лишнего кода
-    subprocess.run([sys.executable, "-m", "streamlit", "run", __file__], check=True)
-
