@@ -1,0 +1,1047 @@
+[
+  {
+    "photoUrl": "https://basket-14.wbbasket.ru/vol2141/part214175/214175021/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "бритва1(фиол)",
+    "prices": [
+      5550
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      2775
+    ],
+    "clubDiscountedPrices": [
+      2775
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 214175021,
+    "colors": [
+      "фиолетовый",
+      "черный",
+      "серебро",
+      "сине-фиолетовый"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 32,
+    "title": "Электробритва 7 в 1 с триммером для бороды",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1642,
+        "type": "auto-promo",
+        "name": "ДР WB: топ-бренды - автоматические скидки",
+        "planPrice": 2720,
+        "entryPrice": 2721,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 5,
+        "actionUrl": "/dp-promo-calendar?action=1642"
+      }
+    ],
+    "competitivePrice": 2721
+  },
+  {
+    "photoUrl": "https://basket-15.wbbasket.ru/vol2357/part235704/235704167/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "бритва2(сереб)",
+    "prices": [
+      5400
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      2700
+    ],
+    "clubDiscountedPrices": [
+      2700
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 235704167,
+    "colors": [
+      "серебро",
+      "черный"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 32,
+    "title": "Электробритва машинка для бритья 6 в 1",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1642,
+        "type": "auto-promo",
+        "name": "ДР WB: топ-бренды - автоматические скидки",
+        "planPrice": 2646,
+        "entryPrice": 2647,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 5,
+        "actionUrl": "/dp-promo-calendar?action=1642"
+      }
+    ],
+    "competitivePrice": 2721,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-25.wbbasket.ru/vol4475/part447531/447531470/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "шейвер2(черн)",
+    "prices": [
+      4654
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      2327
+    ],
+    "clubDiscountedPrices": [
+      2327
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 447531470,
+    "colors": [
+      "черный",
+      "черный матовый"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 32,
+    "title": "Электробритва беспроводная шейвер профессиональный",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1638,
+        "type": "auto-promo",
+        "name": "ДР WB - автоматические скидки 2",
+        "planPrice": 2280,
+        "entryPrice": 2281,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 6,
+        "actionUrl": "/dp-promo-calendar?action=1638"
+      }
+    ],
+    "competitivePrice": 2327,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-18.wbbasket.ru/vol2862/part286288/286288378/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "шейвер1",
+    "prices": [
+      4588
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      2294
+    ],
+    "clubDiscountedPrices": [
+      2294
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 286288378,
+    "colors": [
+      "серебро"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 32,
+    "title": "Электробритва беспроводная шейвер профессиональный",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1642,
+        "type": "auto-promo",
+        "name": "ДР WB: топ-бренды - автоматические скидки",
+        "planPrice": 2248,
+        "entryPrice": 2249,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 5,
+        "actionUrl": "/dp-promo-calendar?action=1642"
+      }
+    ],
+    "competitivePrice": 2294,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-24.wbbasket.ru/vol4346/part434600/434600560/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "бритва(черн.рус)",
+    "prices": [
+      4250
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      2125
+    ],
+    "clubDiscountedPrices": [
+      2125
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 434600560,
+    "colors": [
+      "черный"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 32,
+    "title": "Электробритва для лица с триммером",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1638,
+        "type": "auto-promo",
+        "name": "ДР WB - автоматические скидки 2",
+        "planPrice": 2120,
+        "entryPrice": 2121,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 6,
+        "actionUrl": "/dp-promo-calendar?action=1638"
+      }
+    ],
+    "competitivePrice": 2301,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-24.wbbasket.ru/vol4346/part434600/434600561/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "бритва(металик.рус)",
+    "prices": [
+      4250
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      2125
+    ],
+    "clubDiscountedPrices": [
+      2125
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 434600561,
+    "colors": [
+      "серый металлик",
+      "черный"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 32,
+    "title": "Электробритва для лица с триммером",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1638,
+        "type": "auto-promo",
+        "name": "ДР WB - автоматические скидки 2",
+        "planPrice": 2119,
+        "entryPrice": 2120,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 6,
+        "actionUrl": "/dp-promo-calendar?action=1638"
+      }
+    ],
+    "competitivePrice": 2301,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-26.wbbasket.ru/vol4567/part456770/456770543/images/big/1.webp",
+    "brand": "MOOVON",
+    "subject": "Рюкзаки",
+    "vendorCode": "rykzak_black",
+    "prices": [
+      3105
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      1179.9
+    ],
+    "clubDiscountedPrices": [
+      1179.9
+    ],
+    "discount": 62,
+    "addClubDiscount": 0,
+    "nmID": 456770543,
+    "colors": [
+      "черный"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 41,
+    "title": "Рюкзак городской школьный спортивный",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1638,
+        "type": "auto-promo",
+        "name": "ДР WB - автоматические скидки 2",
+        "planPrice": 1201,
+        "entryPrice": 1202,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 6,
+        "actionUrl": "/dp-promo-calendar?action=1638"
+      }
+    ],
+    "competitivePrice": 1339,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-22.wbbasket.ru/vol3704/part370495/370495529/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "шейвер.зеленый",
+    "prices": [
+      2236
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      1118
+    ],
+    "clubDiscountedPrices": [
+      1118
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 370495529,
+    "colors": [
+      "зеленый",
+      "серебро"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 32,
+    "title": "Электробритва беспроводная шейвер профессиональный",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1638,
+        "type": "auto-promo",
+        "name": "ДР WB - автоматические скидки 2",
+        "planPrice": 1096,
+        "entryPrice": 1097,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 6,
+        "actionUrl": "/dp-promo-calendar?action=1638"
+      }
+    ],
+    "competitivePrice": 1243,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-16.wbbasket.ru/vol2608/part260806/260806532/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "бритва4(4в1)",
+    "prices": [
+      2200
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      1100
+    ],
+    "clubDiscountedPrices": [
+      1100
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 260806532,
+    "colors": [
+      "серебро",
+      "черный"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Электрическая бритва для лица с насадками 4в1",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    }
+  },
+  {
+    "photoUrl": "https://basket-11.wbbasket.ru/vol1632/part163243/163243174/images/big/1.webp",
+    "brand": "KUSSHOP",
+    "subject": "Шорты",
+    "vendorCode": "10.ШО.NIKE-1",
+    "prices": [
+      2000,
+      2000,
+      2000,
+      2000,
+      2000
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      1980,
+      1980,
+      1980,
+      1980,
+      1980
+    ],
+    "clubDiscountedPrices": [
+      1980,
+      1980,
+      1980,
+      1980,
+      1980
+    ],
+    "discount": 1,
+    "addClubDiscount": 0,
+    "nmID": 163243174,
+    "colors": [
+      "глубокий черный"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Шорты оверсайз"
+  },
+  {
+    "photoUrl": "https://basket-11.wbbasket.ru/vol1643/part164323/164323464/images/big/1.webp",
+    "brand": "отличный",
+    "subject": "Шорты",
+    "vendorCode": "10.ШО.NIKE-3",
+    "prices": [
+      2000,
+      2000,
+      2000,
+      2000,
+      2000
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      1980,
+      1980,
+      1980,
+      1980,
+      1980
+    ],
+    "clubDiscountedPrices": [
+      1980,
+      1980,
+      1980,
+      1980,
+      1980
+    ],
+    "discount": 1,
+    "addClubDiscount": 0,
+    "nmID": 164323464,
+    "colors": [
+      "серый"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Шорты"
+  },
+  {
+    "photoUrl": "https://basket-12.wbbasket.ru/vol1828/part182879/182879188/images/big/1.webp",
+    "brand": "kusshop",
+    "subject": "Куртки",
+    "vendorCode": "10.TNF700-1",
+    "prices": [
+      2000,
+      2000,
+      2000,
+      2000,
+      2000,
+      2000,
+      2000
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      1980,
+      1980,
+      1980,
+      1980,
+      1980,
+      1980,
+      1980
+    ],
+    "clubDiscountedPrices": [
+      1980,
+      1980,
+      1980,
+      1980,
+      1980,
+      1980,
+      1980
+    ],
+    "discount": 1,
+    "addClubDiscount": 0,
+    "nmID": 182879188,
+    "colors": [],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Пуховик с капюшоном TNF 700",
+    "labels": [
+      {
+        "name": "tnf",
+        "color": "DEF1DD"
+      },
+      {
+        "name": "the north face",
+        "color": "E4EAFF"
+      }
+    ]
+  },
+  {
+    "photoUrl": "https://basket-22.wbbasket.ru/vol3911/part391194/391194017/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "бритва(черн)",
+    "prices": [
+      2000
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      1000
+    ],
+    "clubDiscountedPrices": [
+      1000
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 391194017,
+    "colors": [
+      "черный"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Электробритва для лица с триммером",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "competitivePrice": 1351,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-22.wbbasket.ru/vol3911/part391194/391194018/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "бритва(метал)",
+    "prices": [
+      2000
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      1000
+    ],
+    "clubDiscountedPrices": [
+      1000
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 391194018,
+    "colors": [
+      "серый металлик",
+      "черный"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Электробритва для лица с триммером",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    }
+  },
+  {
+    "photoUrl": "https://basket-22.wbbasket.ru/vol3704/part370495/370495527/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "шейвер.мини.черный",
+    "prices": [
+      1560
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      780
+    ],
+    "clubDiscountedPrices": [
+      780
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 370495527,
+    "colors": [
+      "черный",
+      "серебро"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Электробритва беспроводная шейвер профессиональный",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "competitivePrice": 781,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-22.wbbasket.ru/vol3704/part370495/370495528/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "шейвер.мини.серебро",
+    "prices": [
+      1560
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      780
+    ],
+    "clubDiscountedPrices": [
+      780
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 370495528,
+    "colors": [
+      "серебро"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Электробритва беспроводная шейвер профессиональный",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "competitivePrice": 781,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-19.wbbasket.ru/vol3149/part314971/314971244/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "головка.сереб",
+    "prices": [
+      1502
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      751
+    ],
+    "clubDiscountedPrices": [
+      751
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 314971244,
+    "colors": [
+      "черный",
+      "серебро"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 32,
+    "title": "Головка для электробритвы",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1642,
+        "type": "auto-promo",
+        "name": "ДР WB: топ-бренды - автоматические скидки",
+        "planPrice": 736,
+        "entryPrice": 737,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 5,
+        "actionUrl": "/dp-promo-calendar?action=1642"
+      }
+    ],
+    "competitivePrice": 751,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-19.wbbasket.ru/vol3149/part314971/314971243/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "головка.фиол",
+    "prices": [
+      1452
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      726
+    ],
+    "clubDiscountedPrices": [
+      726
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 314971243,
+    "colors": [
+      "фиолетовый",
+      "черный",
+      "серебро",
+      "сине-фиолетовый"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 32,
+    "title": "Головка для электробритвы",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1638,
+        "type": "auto-promo",
+        "name": "ДР WB - автоматические скидки 2",
+        "planPrice": 711,
+        "entryPrice": 712,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 6,
+        "actionUrl": "/dp-promo-calendar?action=1638"
+      }
+    ],
+    "competitivePrice": 726,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-19.wbbasket.ru/vol3137/part313737/313737367/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "сеточка+лезвия(шейвер)",
+    "prices": [
+      1352
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      676
+    ],
+    "clubDiscountedPrices": [
+      676
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 313737367,
+    "colors": [
+      "матовое золото"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 32,
+    "title": "Сеточка и лезвие для шейвера",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1638,
+        "type": "auto-promo",
+        "name": "ДР WB - автоматические скидки 2",
+        "planPrice": 662,
+        "entryPrice": 663,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 6,
+        "actionUrl": "/dp-promo-calendar?action=1638"
+      }
+    ],
+    "competitivePrice": 676,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-22.wbbasket.ru/vol3704/part370495/370495530/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "насадка.шейвер",
+    "prices": [
+      1246
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      623
+    ],
+    "clubDiscountedPrices": [
+      623
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 370495530,
+    "colors": [
+      "серебро"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": 32,
+    "title": "Насадка и сетки на шейвер",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    },
+    "promotions": [
+      {
+        "id": 1642,
+        "type": "auto-promo",
+        "name": "ДР WB: топ-бренды - автоматические скидки",
+        "planPrice": 611,
+        "entryPrice": 612,
+        "endDate": "2025-10-22T20:59:59Z",
+        "advantages": [
+          "Поднятие в поиске до 35%",
+          "Плашка на карточке товара",
+          "Баннер на сайте",
+          "Красная цена",
+          "Градусник"
+        ],
+        "boosting": 35,
+        "notInActionCount": 5,
+        "actionUrl": "/dp-promo-calendar?action=1642"
+      }
+    ],
+    "competitivePrice": 623,
+    "isCompetitivePrice": true
+  },
+  {
+    "photoUrl": "https://basket-12.wbbasket.ru/vol1852/part185228/185228927/images/big/1.webp",
+    "brand": "",
+    "subject": "Кроссовки",
+    "vendorCode": "10NIKE-02",
+    "prices": [
+      1111,
+      1111,
+      1111,
+      1111,
+      1111,
+      1111
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      1099.89,
+      1099.89,
+      1099.89,
+      1099.89,
+      1099.89,
+      1099.89
+    ],
+    "clubDiscountedPrices": [
+      1099.89,
+      1099.89,
+      1099.89,
+      1099.89,
+      1099.89,
+      1099.89
+    ],
+    "discount": 1,
+    "addClubDiscount": 0,
+    "nmID": 185228927,
+    "colors": [
+      "белый",
+      "белый бриллиант"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Зимние кроссовки Nike Air Force 1"
+  },
+  {
+    "photoUrl": "https://basket-22.wbbasket.ru/vol3704/part370495/370495526/images/big/1.webp",
+    "brand": "Funke",
+    "subject": "Бритвы электрические",
+    "vendorCode": "шейвер.дисплей",
+    "prices": [
+      1000
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      500
+    ],
+    "clubDiscountedPrices": [
+      500
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 370495526,
+    "colors": [
+      "черный"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Электробритва беспроводная шейвер профессиональный",
+    "autoDiscountLock": {
+      "locked": true,
+      "endTime": null
+    }
+  },
+  {
+    "photoUrl": "https://basket-18.wbbasket.ru/vol2862/part286291/286291714/images/big/1.webp",
+    "brand": "",
+    "subject": "Кошельки",
+    "vendorCode": "портмоне1",
+    "prices": [
+      400
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      200
+    ],
+    "clubDiscountedPrices": [
+      200
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 286291714,
+    "colors": [
+      "черный"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Портмоне для документов, денег и карт"
+  },
+  {
+    "photoUrl": "https://basket-18.wbbasket.ru/vol2862/part286291/286291715/images/big/1.webp",
+    "brand": "",
+    "subject": "Кошельки",
+    "vendorCode": "кошель1",
+    "prices": [
+      400
+    ],
+    "currencyID": 1,
+    "isoCode4217": "RUB",
+    "discountedPrices": [
+      200
+    ],
+    "clubDiscountedPrices": [
+      200
+    ],
+    "discount": 50,
+    "addClubDiscount": 0,
+    "nmID": 286291715,
+    "colors": [
+      "черный"
+    ],
+    "editableSizePrice": false,
+    "discountOnSite": null,
+    "title": "Кошелек, бумажник, портмоне"
+  }
+]
