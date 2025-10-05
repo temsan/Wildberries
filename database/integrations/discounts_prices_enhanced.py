@@ -94,9 +94,22 @@ class DiscountsPricesDBProcessor:
         promotions = item.get('promotions', [])
         has_promotions = bool(promotions and len(promotions) > 0)
         
-        return {
+        # Данные продукта для создания/обновления
+        product_data = {
             'nm_id': nm_id,
             'vendor_code': vendor_code,
+            'brand': item.get('brand', ''),
+            'title': item.get('title', ''),
+            'subject': item.get('subject', ''),
+            'volume': item.get('volume', 0.0),
+            'active': True  # По умолчанию активный
+        }
+        
+        return {
+            # Данные продукта
+            **product_data,
+            
+            # Данные цен
             'price': prices,
             'discounted_price': discounted_prices,
             'discount': discount,
@@ -105,7 +118,10 @@ class DiscountsPricesDBProcessor:
             'competitive_price': competitive_price,
             'is_competitive_price': is_competitive_price,
             'has_promotions': has_promotions,
-            'raw_data': item  # Сохраняем исходные данные для отладки
+            
+            # Метаданные
+            'raw_data': item,  # Сохраняем исходные данные для отладки
+            'variants': self._extract_variants(item)  # Варианты товара (баркоды)
         }
     
     def _process_price_list(self, prices: List[Any], field_name: str, nm_id: int) -> float:
@@ -153,6 +169,61 @@ class DiscountsPricesDBProcessor:
         
         price_after_spp = discounted_price * (1 - discount_on_site / 100)
         return round(price_after_spp, 2)
+    
+    def _extract_variants(self, item: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Извлекает варианты товара (баркоды, размеры) из данных API.
+        
+        Структура: nmID → vendorCode → barcodes
+        
+        Args:
+            item: Товар из Discounts-Prices API
+            
+        Returns:
+            Список вариантов товара (баркодов)
+        """
+        variants = []
+        
+        # Получаем баркоды из разных возможных полей API
+        barcodes = item.get('barcodes', [])
+        if not barcodes:
+            barcodes = item.get('barcode', [])
+        
+        # Если баркод один (строка), делаем список
+        if isinstance(barcodes, str):
+            barcodes = [barcodes]
+        
+        # Если баркод один (число), делаем список
+        if isinstance(barcodes, (int, float)):
+            barcodes = [str(barcodes)]
+        
+        # Обрабатываем каждый баркод
+        for barcode in barcodes:
+            if barcode and str(barcode).strip():  # Пропускаем пустые баркоды
+                variant = {
+                    'barcode': str(barcode).strip(),
+                    'size': item.get('size', item.get('techSize', item.get('wbSize', ''))),
+                    'active': True
+                }
+                variants.append(variant)
+        
+        # Если нет баркодов, создаем один вариант с генерацией баркода
+        if not variants:
+            nm_id = item.get('nmID', 0)
+            vendor_code = item.get('vendorCode', '')
+            
+            # Генерируем баркод на основе nmID и vendorCode
+            generated_barcode = f"{nm_id}_{vendor_code}_default" if nm_id else "unknown_barcode"
+            
+            variants.append({
+                'barcode': generated_barcode,
+                'size': item.get('size', item.get('techSize', item.get('wbSize', ''))),
+                'active': True
+            })
+            
+            print(f"⚠️  nmID {nm_id}: Нет баркодов в API, создан генерацией: {generated_barcode}")
+        
+        return variants
     
     def sync_prices_to_db(
         self, 
@@ -243,7 +314,18 @@ class DiscountsPricesDBProcessor:
                     failed_count += 1
                     continue
                 
-                # Upsert в БД через функцию update_prices_with_history
+                # 1. Сначала создаем/обновляем продукт с вариантами
+                self.db_client.rpc('upsert_product_with_variants', {
+                    'p_nm_id': processed['nm_id'],
+                    'p_vendor_code': processed['vendor_code'],
+                    'p_brand': processed['brand'],
+                    'p_title': processed['title'],
+                    'p_subject': processed['subject'],
+                    'p_volume': processed['volume'],
+                    'p_variants': json.dumps(processed['variants'])
+                }).execute()
+                
+                # 2. Затем обновляем цены с историей
                 self.db_client.rpc('update_prices_with_history', {
                     'p_nm_id': processed['nm_id'],
                     'p_vendor_code': processed['vendor_code'],
@@ -384,6 +466,102 @@ class DiscountsPricesDBProcessor:
             print(f"❌ Ошибка получения аналитики: {e}")
             return {'error': str(e)}
     
+    def get_products_overview(self) -> Dict[str, Any]:
+        """
+        Получает обзор продуктов в БД с иерархией: nmID → vendorCode → barcodes.
+        
+        Returns:
+            Обзор продуктов
+        """
+        try:
+            # Статистика продуктов (nmID)
+            products_query = """
+            SELECT 
+                COUNT(*) as total_products,
+                COUNT(CASE WHEN active = true THEN 1 END) as active_products,
+                COUNT(DISTINCT brand) as unique_brands,
+                COUNT(DISTINCT subject) as unique_subjects,
+                AVG(volume) as avg_volume
+            FROM products
+            """
+            
+            products_result = self.db_client.client.rpc('exec_sql', {'sql': products_query}).execute()
+            products_stats = products_result.data[0] if products_result.data else {}
+            
+            # Статистика по артикулам продавца (vendorCode)
+            vendor_codes_query = """
+            SELECT 
+                COUNT(DISTINCT vendor_code) as unique_vendor_codes,
+                COUNT(*) as total_vendor_code_records
+            FROM products
+            WHERE vendor_code IS NOT NULL AND vendor_code != ''
+            """
+            
+            vendor_codes_result = self.db_client.client.rpc('exec_sql', {'sql': vendor_codes_query}).execute()
+            vendor_codes_stats = vendor_codes_result.data[0] if vendor_codes_result.data else {}
+            
+            # Статистика по баркодам (barcodes)
+            barcodes_query = """
+            SELECT 
+                COUNT(*) as total_barcodes,
+                COUNT(CASE WHEN active = true THEN 1 END) as active_barcodes,
+                COUNT(DISTINCT barcode) as unique_barcodes
+            FROM seller_articles
+            """
+            
+            barcodes_result = self.db_client.client.rpc('exec_sql', {'sql': barcodes_query}).execute()
+            barcodes_stats = barcodes_result.data[0] if barcodes_result.data else {}
+            
+            # Иерархия: товары с количеством баркодов
+            hierarchy_query = """
+            SELECT 
+                p.nm_id,
+                p.vendor_code,
+                p.brand,
+                p.title,
+                COUNT(sa.id) as barcodes_count,
+                COUNT(CASE WHEN sa.active = true THEN 1 END) as active_barcodes_count
+            FROM products p
+            LEFT JOIN seller_articles sa ON p.nm_id = sa.nm_id
+            WHERE p.active = true
+            GROUP BY p.nm_id, p.vendor_code, p.brand, p.title
+            ORDER BY barcodes_count DESC
+            LIMIT 20
+            """
+            
+            hierarchy_result = self.db_client.client.rpc('exec_sql', {'sql': hierarchy_query}).execute()
+            
+            # Топ брендов с детализацией по баркодам
+            brands_query = """
+            SELECT 
+                brand,
+                COUNT(DISTINCT p.nm_id) as products_count,
+                COUNT(DISTINCT p.vendor_code) as vendor_codes_count,
+                COUNT(sa.id) as barcodes_count
+            FROM products p
+            LEFT JOIN seller_articles sa ON p.nm_id = sa.nm_id
+            WHERE p.active = true AND brand IS NOT NULL AND brand != ''
+            GROUP BY brand
+            ORDER BY products_count DESC
+            LIMIT 10
+            """
+            
+            brands_result = self.db_client.client.rpc('exec_sql', {'sql': brands_query}).execute()
+            
+            return {
+                'hierarchy_summary': {
+                    'products': products_stats,
+                    'vendor_codes': vendor_codes_stats,
+                    'barcodes': barcodes_stats
+                },
+                'products_with_barcodes': hierarchy_result.data,
+                'top_brands': brands_result.data
+            }
+            
+        except Exception as e:
+            print(f"❌ Ошибка получения обзора продуктов: {e}")
+            return {'error': str(e)}
+    
     def export_to_json(self, output_file: str, max_goods: Optional[int] = None) -> bool:
         """
         Экспортирует данные в JSON файл (альтернатива Google Sheets).
@@ -470,13 +648,31 @@ if __name__ == "__main__":
     
     print(f"\n📊 Результат: {stats}")
     
-    # Получаем аналитику
-    print("\n📈 Получаем аналитику...")
+    # Получаем обзор продуктов с иерархией
+    print("\n📊 Получаем обзор продуктов...")
+    overview = processor.get_products_overview()
+    
+    if 'error' not in overview:
+        hierarchy = overview['hierarchy_summary']
+        print(f"📊 Иерархия продуктов:")
+        print(f"   • Продукты (nmID): {hierarchy['products'].get('total_products', 0)}")
+        print(f"   • Артикулы продавца: {hierarchy['vendor_codes'].get('unique_vendor_codes', 0)}")
+        print(f"   • Баркоды: {hierarchy['barcodes'].get('total_barcodes', 0)}")
+        print(f"   • Уникальных баркодов: {hierarchy['barcodes'].get('unique_barcodes', 0)}")
+        
+        # Показываем примеры товаров с баркодами
+        if overview['products_with_barcodes']:
+            print(f"\n📦 Примеры товаров с баркодами:")
+            for item in overview['products_with_barcodes'][:5]:
+                print(f"   • {item['nm_id']} ({item['vendor_code']}): {item['barcodes_count']} баркодов")
+    
+    # Получаем аналитику цен
+    print("\n📈 Получаем аналитику цен...")
     analytics = processor.get_price_analytics(days=7)
     
     if 'error' not in analytics:
-        print(f"📊 Аналитика за 7 дней:")
-        print(f"   • Всего товаров: {analytics['statistics'].get('total_products', 0)}")
+        print(f"💰 Аналитика цен за 7 дней:")
+        print(f"   • Товаров с ценами: {analytics['statistics'].get('total_products', 0)}")
         print(f"   • Средняя цена: {analytics['statistics'].get('avg_price', 0):.2f} ₽")
         print(f"   • Товаров со скидками: {analytics['statistics'].get('products_with_discount', 0)}")
         print(f"   • Изменений цен: {len(analytics['price_changes'])}")
