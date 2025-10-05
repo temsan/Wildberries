@@ -53,7 +53,7 @@ st.set_page_config(
     page_title="WB API Dashboard",
     page_icon="📦",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Максимально компактный CSS - убираем все пустые места
@@ -201,13 +201,112 @@ div[data-testid="stVerticalBlock"] > div {
     margin: 0.05rem !important;
 }
 
-/* Темная тема - компактная */
+/* Темная тема с анимированным градиентом */
 .stApp {
-    background-color: #1a1a1a !important;
+    background: linear-gradient(-45deg, #1a1a1a, #2d2d2d, #1a1a1a, #3d3d3d) !important;
+    background-size: 400% 400% !important;
+    animation: gradientShift 15s ease infinite !important;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .stApp > div > div > div > div {
-    background-color: #1a1a1a !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Основной контент в стеклянном стиле */
+.main .block-container {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(15px) !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+    margin: 1rem !important;
+    padding: 1.5rem !important;
+}
+
+/* LIQUID GLASS SIDEBAR - стеклянный эффект */
+.css-1d391kg {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+    border-radius: 0 20px 20px 0 !important;
+}
+
+/* Элементы боковой панели */
+.css-1d391kg .stRadio > div {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 12px !important;
+    padding: 0.5rem !important;
+    margin: 0.25rem 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Радио кнопки в стеклянном стиле */
+.css-1d391kg .stRadio label {
+    background: rgba(0, 212, 170, 0.1) !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 1rem !important;
+    margin: 0.1rem !important;
+    border: 1px solid rgba(0, 212, 170, 0.2) !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(5px) !important;
+}
+
+.css-1d391kg .stRadio label:hover {
+    background: rgba(0, 212, 170, 0.2) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3) !important;
+}
+
+.css-1d391kg .stRadio label[data-testid="stMarkdownContainer"] {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Активная вкладка */
+.css-1d391kg .stRadio input:checked + label {
+    background: linear-gradient(135deg, rgba(0, 212, 170, 0.3), rgba(0, 212, 170, 0.1)) !important;
+    border: 1px solid rgba(0, 212, 170, 0.5) !important;
+    box-shadow: 0 4px 16px rgba(0, 212, 170, 0.4) !important;
+}
+
+/* Заголовки в боковой панели */
+.css-1d391kg h1, .css-1d391kg h2, .css-1d391kg h3 {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 8px !important;
+    padding: 0.5rem !important;
+    margin: 0.5rem 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #00d4aa !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Кнопки в боковой панели */
+.css-1d391kg .stButton > button {
+    background: linear-gradient(135deg, rgba(0, 212, 170, 0.2), rgba(0, 212, 170, 0.1)) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(0, 212, 170, 0.3) !important;
+    border-radius: 8px !important;
+    color: #00d4aa !important;
+    box-shadow: 0 4px 12px rgba(0, 212, 170, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+.css-1d391kg .stButton > button:hover {
+    background: linear-gradient(135deg, rgba(0, 212, 170, 0.3), rgba(0, 212, 170, 0.2)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4) !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -469,24 +568,38 @@ else:
     """, unsafe_allow_html=True)
 
 # =============================================================================
-# ПОЛНОФУНКЦИОНАЛЬНЫЕ ВКЛАДКИ
+# БОКОВОЕ МЕНЮ В СТИЛЕ LIQUID GLASS
 # =============================================================================
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
-    "📊 Dashboard", 
-    "🔄 Синхронизация", 
-    "📦 Товары", 
-    "💰 Цены", 
-    "📈 История цен",
-    "📝 Логи",
-    "🔧 SQL Запросы",
-    "⚙️ Настройки"
-])
+# Боковое меню
+with st.sidebar:
+    st.markdown("### 🎛️ Навигация")
+    
+    # Радио кнопки для навигации
+    page = st.radio(
+        "Выберите раздел:",
+        [
+            "📊 Dashboard", 
+            "🔄 Синхронизация", 
+            "📦 Товары", 
+            "💰 Цены", 
+            "📈 История цен",
+            "📝 Логи",
+            "🔧 SQL Запросы",
+            "⚙️ Настройки"
+        ],
+        key="main_navigation"
+    )
+    
+    st.markdown("---")
+    st.markdown("### 📊 Статус")
+    st.success("✅ Система активна")
+    st.info("🔄 Последнее обновление: 2 мин назад")
 
 # =============================================================================
 # DASHBOARD - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
-with tab1:
+if page == "📊 Dashboard":
     st.markdown("## 📊 Обзор системы")
     
     # Основные метрики
@@ -560,7 +673,7 @@ with tab1:
 # =============================================================================
 # СИНХРОНИЗАЦИЯ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
-with tab2:
+elif page == "🔄 Синхронизация":
     st.markdown("## 🔄 Синхронизация данных")
     
     col1, col2 = st.columns([2, 1])
@@ -578,8 +691,8 @@ with tab2:
         with st.expander("⚙️ Дополнительные параметры"):
             col_a, col_b = st.columns(2)
             with col_a:
-                batch_size = st.number_input("Размер батча", min_value=10, max_value=1000, value=100)
-                max_items = st.number_input("Максимум товаров", min_value=100, max_value=10000, value=1000)
+                batch_size = st.number_input("Размер батча", min_value=10, max_value=1000, value=100, key="batch_size_1")
+                max_items = st.number_input("Максимум товаров", min_value=100, max_value=10000, value=1000, key="max_items_1")
             with col_b:
                 include_inactive = st.checkbox("Включить неактивные товары")
                 validate_data = st.checkbox("Валидировать данные")
@@ -665,7 +778,7 @@ with tab2:
 # =============================================================================
 # ТОВАРЫ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
-with tab3:
+elif page == "📦 Товары":
     st.markdown("## 📦 Управление товарами")
     
     # Поиск и фильтры
@@ -684,8 +797,8 @@ with tab3:
     with st.expander("🔍 Расширенные фильтры"):
         col_a, col_b, col_c = st.columns(3)
         with col_a:
-            min_price = st.number_input("Мин. цена", value=0)
-            max_price = st.number_input("Макс. цена", value=100000)
+            min_price = st.number_input("Мин. цена", value=0, key="min_price")
+            max_price = st.number_input("Макс. цена", value=100000, key="max_price")
         with col_b:
             has_discount = st.selectbox("Скидка", ["Все", "Есть скидка", "Без скидки"])
             has_stock = st.selectbox("Остатки", ["Все", "Есть остатки", "Нет остатков"])
@@ -733,7 +846,7 @@ with tab3:
 # =============================================================================
 # ЦЕНЫ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
-with tab4:
+elif page == "💰 Цены":
     st.markdown("## 💰 Управление ценами")
     
     col1, col2 = st.columns([2, 1])
@@ -763,7 +876,7 @@ with tab4:
                 "Действие",
                 ["Повысить на %", "Понизить на %", "Установить фиксированную цену", "Синхронизировать с конкурентами"]
             )
-            price_value = st.number_input("Значение", value=10, min_value=0, max_value=100)
+            price_value = st.number_input("Значение", value=10, min_value=0, max_value=100, key="price_value")
         
         with col_b:
             target_items = st.multiselect(
@@ -800,7 +913,7 @@ with tab4:
 # =============================================================================
 # ИСТОРИЯ ЦЕН - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
-with tab5:
+elif page == "📈 История цен":
     st.markdown("## 📈 История цен")
     
     # Фильтры для истории
@@ -867,7 +980,7 @@ with tab5:
 # =============================================================================
 # ЛОГИ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
-with tab6:
+elif page == "📝 Логи":
     st.markdown("## 📝 Логи системы")
     
     # Фильтры логов
@@ -935,7 +1048,7 @@ with tab6:
 # =============================================================================
 # SQL ЗАПРОСЫ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
-with tab7:
+elif page == "🔧 SQL Запросы":
     st.markdown("## 🔧 SQL Запросы")
     
     col1, col2 = st.columns([2, 1])
@@ -1045,7 +1158,7 @@ LIMIT 100;"""
 # =============================================================================
 # НАСТРОЙКИ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
-with tab8:
+elif page == "⚙️ Настройки":
     st.markdown("## ⚙️ Настройки системы")
     
     # API ключи
@@ -1107,10 +1220,10 @@ with tab8:
     
     with col2:
         st.markdown("#### Параметры синхронизации")
-        batch_size = st.number_input("Размер батча", min_value=10, max_value=1000, value=100)
-        max_items = st.number_input("Максимум товаров за раз", min_value=100, max_value=10000, value=1000)
-        retry_attempts = st.number_input("Количество попыток", min_value=1, max_value=10, value=3)
-        timeout = st.number_input("Таймаут (сек)", min_value=10, max_value=300, value=60)
+        batch_size = st.number_input("Размер батча", min_value=10, max_value=1000, value=100, key="batch_size_2")
+        max_items = st.number_input("Максимум товаров за раз", min_value=100, max_value=10000, value=1000, key="max_items_2")
+        retry_attempts = st.number_input("Количество попыток", min_value=1, max_value=10, value=3, key="retry_attempts")
+        timeout = st.number_input("Таймаут (сек)", min_value=10, max_value=300, value=60, key="timeout")
     
     if st.button("💾 Сохранить настройки синхронизации"):
         st.success("Настройки синхронизации сохранены")
@@ -1141,8 +1254,8 @@ with tab8:
     
     with col1:
         log_level = st.selectbox("Уровень логирования", ["DEBUG", "INFO", "WARNING", "ERROR"])
-        log_retention = st.number_input("Хранить логи (дней)", min_value=7, max_value=365, value=30)
-        cache_size = st.number_input("Размер кэша (MB)", min_value=10, max_value=1000, value=100)
+        log_retention = st.number_input("Хранить логи (дней)", min_value=7, max_value=365, value=30, key="log_retention")
+        cache_size = st.number_input("Размер кэша (MB)", min_value=10, max_value=1000, value=100, key="cache_size")
     
     with col2:
         theme = st.selectbox("Тема интерфейса", ["Темная", "Светлая", "Автоматическая"])
