@@ -246,7 +246,9 @@ COMMENT ON TABLE price_history IS 'История изменения цен дл
 
 -- Функция для обновления updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER 
+SET search_path = public
+AS $$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
@@ -310,13 +312,8 @@ CREATE POLICY warehouse_remains_all_policy ON warehouse_remains
     USING (true)
     WITH CHECK (true);
 
--- API Schemas: чтение для authenticated, запись для admins
-CREATE POLICY api_schemas_read_policy ON api_schemas
-    FOR SELECT
-    TO authenticated
-    USING (true);
-
-CREATE POLICY api_schemas_write_policy ON api_schemas
+-- API Schemas: единая политика для всех операций
+CREATE POLICY api_schemas_policy ON api_schemas
     FOR ALL
     TO authenticated
     USING (true)
@@ -415,7 +412,9 @@ CREATE OR REPLACE FUNCTION upsert_product_with_variants(
     p_volume DECIMAL,
     p_variants JSONB -- [{"barcode": "...", "size": "..."}]
 )
-RETURNS INTEGER AS $$
+RETURNS INTEGER 
+SET search_path = public
+AS $$
 DECLARE
     v_variant JSONB;
 BEGIN
@@ -467,7 +466,9 @@ CREATE OR REPLACE FUNCTION update_prices_with_history(
     p_is_competitive_price BOOLEAN,
     p_has_promotions BOOLEAN
 )
-RETURNS VOID AS $$
+RETURNS VOID 
+SET search_path = public
+AS $$
 BEGIN
     -- Сохраняем текущие цены в историю (если есть изменения)
     INSERT INTO price_history (nm_id, price, discounted_price, discount, discount_on_site, price_after_spp)
@@ -513,7 +514,9 @@ COMMENT ON FUNCTION update_prices_with_history IS 'Обновление цен �
 
 -- Функция для очистки старых логов (старше 30 дней)
 CREATE OR REPLACE FUNCTION cleanup_old_logs()
-RETURNS INTEGER AS $$
+RETURNS INTEGER 
+SET search_path = public
+AS $$
 DECLARE
     deleted_count INTEGER;
 BEGIN
@@ -526,7 +529,9 @@ $$ LANGUAGE plpgsql;
 
 -- Функция для очистки старой истории цен (старше 90 дней)
 CREATE OR REPLACE FUNCTION cleanup_old_price_history()
-RETURNS INTEGER AS $$
+RETURNS INTEGER 
+SET search_path = public
+AS $$
 DECLARE
     deleted_count INTEGER;
 BEGIN
