@@ -1,0 +1,53 @@
+Добавлена интеграция с БД Supabase (PostgreSQL)
+
+Реализовано:
+
+Схема БД:
+- 7 таблиц (products, seller_articles, unit_economics, warehouse_remains, price_history, api_schemas, validation_logs)
+- Индексы B-tree и GIN для производительности
+- Триггеры для автоматического обновления updated_at
+- RLS policies для безопасности
+- Views для экспорта (v_products_full, v_active_articles_export)
+- Функции: upsert_product_with_variants, update_prices_with_history, cleanup_old_logs, cleanup_old_price_history
+
+Python клиент:
+- db_client.py: централизованное подключение к Supabase
+- Методы для всех CRUD операций
+- Логирование валидации
+- Утилиты обслуживания
+
+Интеграции:
+- content_cards_db.py: синхронизация артикулов из Content API → БД
+- discounts_prices_db.py: синхронизация цен из Discounts-Prices API → БД
+- main_sync.py: главный скрипт с режимами full/articles/prices/export/stats
+
+Документация:
+- database/README.md: анализ, ER-диаграмма (Mermaid), примеры интеграции
+- database/SETUP.md: инструкция по настройке, troubleshooting
+- database/queries.sql: 80+ готовых SQL-запросов для работы
+- DATABASE_INTEGRATION.md: краткая сводка в корне проекта
+
+Зависимости:
+- supabase==2.3.0
+- postgrest-py==0.13.0
+
+Веб-интерфейс (Streamlit):
+- database/web_interface.py: реактивный веб-интерфейс для управления БД
+- Страницы: Dashboard, Синхронизация, Товары, Цены, Логи, Настройки
+- Фильтры, поиск, прогресс-бары, метрики
+- database/WEB_INTERFACE.md: документация по интерфейсу
+
+Файлы:
+- database/schema.sql (800+ строк SQL)
+- database/queries.sql (500+ строк примеров)
+- database/README.md (полная документация)
+- database/SETUP.md (инструкция)
+- database/WEB_INTERFACE.md (документация веб-интерфейса)
+- database/db_client.py (Python клиент)
+- database/integrations/content_cards_db.py
+- database/integrations/discounts_prices_db.py
+- database/main_sync.py (главный скрипт)
+- database/web_interface.py (веб-интерфейс Streamlit)
+- requirements.txt (обновлен: добавлен streamlit)
+- DATABASE_INTEGRATION.md (сводка)
+

@@ -1,0 +1,12 @@
+🚀 ЗАПУСК ВЕБ-ИНТЕРФЕЙСА
+========================
+
+КОМАНДА:
+========
+python database/web_interface.py
+
+АДРЕС:
+======
+http://localhost:8501
+
+ГОТОВО! 🎉
