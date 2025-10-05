@@ -220,15 +220,17 @@ div[data-testid="stVerticalBlock"] > div {
     -webkit-backdrop-filter: blur(10px) !important;
 }
 
-/* Основной контент в стеклянном стиле */
+/* Основной контент в стеклянном стиле - максимально компактный */
 .main .block-container {
     background: rgba(255, 255, 255, 0.03) !important;
     backdrop-filter: blur(15px) !important;
-    border-radius: 20px !important;
+    border-radius: 15px !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
-    margin: 1rem !important;
-    padding: 1.5rem !important;
+    margin: 0.5rem !important;
+    padding: 0.75rem !important;
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
 }
 
 /* LIQUID GLASS SIDEBAR - стеклянный эффект */
@@ -241,43 +243,33 @@ div[data-testid="stVerticalBlock"] > div {
     border-radius: 0 20px 20px 0 !important;
 }
 
-/* Элементы боковой панели */
-.css-1d391kg .stRadio > div {
-    background: rgba(255, 255, 255, 0.05) !important;
+/* Кнопки навигации в стеклянном стиле */
+.css-1d391kg .stButton > button {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
+    backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
     border-radius: 12px !important;
-    padding: 0.5rem !important;
-    margin: 0.25rem 0 !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(10px) !important;
-}
-
-/* Радио кнопки в стеклянном стиле */
-.css-1d391kg .stRadio label {
-    background: rgba(0, 212, 170, 0.1) !important;
-    border-radius: 8px !important;
-    padding: 0.5rem 1rem !important;
-    margin: 0.1rem !important;
-    border: 1px solid rgba(0, 212, 170, 0.2) !important;
+    color: #ffffff !important;
     transition: all 0.3s ease !important;
-    backdrop-filter: blur(5px) !important;
+    margin: 0.25rem 0 !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
 }
 
-.css-1d391kg .stRadio label:hover {
-    background: rgba(0, 212, 170, 0.2) !important;
+.css-1d391kg .stButton > button:hover {
+    background: linear-gradient(135deg, rgba(0, 212, 170, 0.2), rgba(0, 212, 170, 0.1)) !important;
+    border: 1px solid rgba(0, 212, 170, 0.4) !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3) !important;
+    box-shadow: 0 6px 20px rgba(0, 212, 170, 0.3) !important;
+    color: #00d4aa !important;
 }
 
-.css-1d391kg .stRadio label[data-testid="stMarkdownContainer"] {
-    background: transparent !important;
-    border: none !important;
-}
-
-/* Активная вкладка */
-.css-1d391kg .stRadio input:checked + label {
-    background: linear-gradient(135deg, rgba(0, 212, 170, 0.3), rgba(0, 212, 170, 0.1)) !important;
-    border: 1px solid rgba(0, 212, 170, 0.5) !important;
-    box-shadow: 0 4px 16px rgba(0, 212, 170, 0.4) !important;
+.css-1d391kg .stButton > button:active {
+    transform: translateY(0px) !important;
+    box-shadow: 0 2px 8px rgba(0, 212, 170, 0.4) !important;
 }
 
 /* Заголовки в боковой панели */
@@ -292,22 +284,6 @@ div[data-testid="stVerticalBlock"] > div {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Кнопки в боковой панели */
-.css-1d391kg .stButton > button {
-    background: linear-gradient(135deg, rgba(0, 212, 170, 0.2), rgba(0, 212, 170, 0.1)) !important;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(0, 212, 170, 0.3) !important;
-    border-radius: 8px !important;
-    color: #00d4aa !important;
-    box-shadow: 0 4px 12px rgba(0, 212, 170, 0.2) !important;
-    transition: all 0.3s ease !important;
-}
-
-.css-1d391kg .stButton > button:hover {
-    background: linear-gradient(135deg, rgba(0, 212, 170, 0.3), rgba(0, 212, 170, 0.2)) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4) !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -571,25 +547,37 @@ else:
 # БОКОВОЕ МЕНЮ В СТИЛЕ LIQUID GLASS
 # =============================================================================
 
-# Боковое меню
+# Боковое меню с кнопками
 with st.sidebar:
     st.markdown("### 🎛️ Навигация")
     
-    # Радио кнопки для навигации
-    page = st.radio(
-        "Выберите раздел:",
-        [
-            "📊 Dashboard", 
-            "🔄 Синхронизация", 
-            "📦 Товары", 
-            "💰 Цены", 
-            "📈 История цен",
-            "📝 Логи",
-            "🔧 SQL Запросы",
-            "⚙️ Настройки"
-        ],
-        key="main_navigation"
-    )
+    # Кнопки навигации
+    if st.button("📊 Dashboard", key="nav_dashboard", use_container_width=True):
+        st.session_state.current_page = "📊 Dashboard"
+    
+    if st.button("🔄 Синхронизация", key="nav_sync", use_container_width=True):
+        st.session_state.current_page = "🔄 Синхронизация"
+    
+    if st.button("📦 Товары", key="nav_products", use_container_width=True):
+        st.session_state.current_page = "📦 Товары"
+    
+    if st.button("💰 Цены", key="nav_prices", use_container_width=True):
+        st.session_state.current_page = "💰 Цены"
+    
+    if st.button("📈 История цен", key="nav_history", use_container_width=True):
+        st.session_state.current_page = "📈 История цен"
+    
+    if st.button("📝 Логи", key="nav_logs", use_container_width=True):
+        st.session_state.current_page = "📝 Логи"
+    
+    if st.button("🔧 SQL Запросы", key="nav_sql", use_container_width=True):
+        st.session_state.current_page = "🔧 SQL Запросы"
+    
+    if st.button("⚙️ Настройки", key="nav_settings", use_container_width=True):
+        st.session_state.current_page = "⚙️ Настройки"
+    
+    # Получаем текущую страницу
+    page = st.session_state.get('current_page', "📊 Dashboard")
     
     st.markdown("---")
     st.markdown("### 📊 Статус")
@@ -600,7 +588,6 @@ with st.sidebar:
 # DASHBOARD - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
 if page == "📊 Dashboard":
-    st.markdown("## 📊 Обзор системы")
     
     # Основные метрики
     col1, col2, col3, col4 = st.columns(4)
@@ -637,7 +624,6 @@ if page == "📊 Dashboard":
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("### 🎯 Быстрые действия")
         if st.button("🔄 Синхронизировать данные", key="btn_sync_1"):
             st.success("Синхронизация запущена!")
         
@@ -648,7 +634,6 @@ if page == "📊 Dashboard":
             st.success("Отчет создан!")
     
     with col2:
-        st.markdown("### 📈 Статистика")
         st.markdown("""
         <div class="metric-card">
             <ul style="color: #e5e7eb; margin: 0; padding-left: 1.5rem;">
@@ -662,7 +647,6 @@ if page == "📊 Dashboard":
         """, unsafe_allow_html=True)
     
     # График активности
-    st.markdown("### 📊 График активности")
     chart_data = pd.DataFrame({
         'День': ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
         'Синхронизации': [12, 15, 8, 22, 18, 5, 3],
@@ -674,12 +658,10 @@ if page == "📊 Dashboard":
 # СИНХРОНИЗАЦИЯ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
 elif page == "🔄 Синхронизация":
-    st.markdown("## 🔄 Синхронизация данных")
     
     col1, col2 = st.columns([2, 1])
     
     with col1:
-        st.markdown("### Выберите источник данных")
         
         sync_option = st.selectbox(
             "Источник",
@@ -713,7 +695,6 @@ elif page == "🔄 Синхронизация":
                     st.success("✅ Синхронизация завершена!")
                     
                     # Показываем результаты
-                    st.markdown("### 📊 Результаты синхронизации")
                     results_data = pd.DataFrame({
                         'Операция': ['Всего товаров', 'Успешно обработано', 'Ошибок', 'Время выполнения'],
                         'Значение': [
@@ -744,7 +725,6 @@ elif page == "🔄 Синхронизация":
                 st.info("💡 Проверьте настройки API ключей в api_keys.py")
     
     with col2:
-        st.markdown("### Статус API")
         
         # Проверка API ключей
         try:
@@ -766,7 +746,6 @@ elif page == "🔄 Синхронизация":
             st.error(f"❌ Ошибка проверки API ключей: {e}")
         
         # История синхронизаций
-        st.markdown("### 📜 История синхронизаций")
         history_data = pd.DataFrame({
             'Время': ['15:30', '14:15', '13:00', '11:45'],
             'Тип': ['Content Cards', 'Prices', 'Content Cards', 'Prices'],
@@ -779,7 +758,6 @@ elif page == "🔄 Синхронизация":
 # ТОВАРЫ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
 elif page == "📦 Товары":
-    st.markdown("## 📦 Управление товарами")
     
     # Поиск и фильтры
     col1, col2, col3 = st.columns([2, 1, 1])
@@ -807,7 +785,6 @@ elif page == "📦 Товары":
             date_to = st.date_input("Дата создания до", value=datetime.now())
     
     # Таблица товаров
-    st.markdown("### Список товаров")
     
     # Пример данных
     sample_data = pd.DataFrame({
@@ -824,7 +801,6 @@ elif page == "📦 Товары":
     st.dataframe(sample_data, key="btn_3")
     
     # Действия с товарами
-    st.markdown("### Действия")
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
@@ -847,12 +823,10 @@ elif page == "📦 Товары":
 # ЦЕНЫ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
 elif page == "💰 Цены":
-    st.markdown("## 💰 Управление ценами")
     
     col1, col2 = st.columns([2, 1])
     
     with col1:
-        st.markdown("### Текущие цены")
         
         # Пример данных цен
         price_data = pd.DataFrame({
@@ -868,7 +842,6 @@ elif page == "💰 Цены":
         st.dataframe(price_data, key="btn_8")
         
         # Массовые операции с ценами
-        st.markdown("### 💰 Массовые операции")
         col_a, col_b = st.columns(2)
         
         with col_a:
@@ -887,7 +860,6 @@ elif page == "💰 Цены":
                 st.success(f"Изменения применены к {len(target_items)} товарам!")
     
     with col2:
-        st.markdown("### Анализ цен")
         
         if st.button("📊 Анализ цен", key="btn_9"):
             st.info("Анализ цен запущен")
@@ -902,7 +874,6 @@ elif page == "💰 Цены":
             st.info("Анализ динамики запущен")
         
         # График цен
-        st.markdown("### 📈 Топ изменения цен")
         price_changes = pd.DataFrame({
             'Товар': ['Товар 1', 'Товар 2', 'Товар 3'],
             'Изменение': [150, -200, 50],
@@ -914,7 +885,6 @@ elif page == "💰 Цены":
 # ИСТОРИЯ ЦЕН - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
 elif page == "📈 История цен":
-    st.markdown("## 📈 История цен")
     
     # Фильтры для истории
     col1, col2, col3 = st.columns(3)
@@ -937,7 +907,6 @@ elif page == "📈 История цен":
         )
     
     # График истории цен
-    st.markdown("### 📊 График изменения цен")
     
     # Пример данных для графика
     dates = pd.date_range(start=datetime.now() - timedelta(days=30), end=datetime.now(), freq='D')
@@ -951,7 +920,6 @@ elif page == "📈 История цен":
     st.line_chart(price_history_data.set_index('Дата'))
     
     # Детальная таблица истории
-    st.markdown("### 📋 Детальная история")
     
     history_table = pd.DataFrame({
         'Дата': ['2025-01-04 15:30', '2025-01-04 14:15', '2025-01-04 13:00', '2025-01-04 11:45'],
@@ -981,7 +949,6 @@ elif page == "📈 История цен":
 # ЛОГИ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
 elif page == "📝 Логи":
-    st.markdown("## 📝 Логи системы")
     
     # Фильтры логов
     col1, col2, col3, col4 = st.columns(4)
@@ -999,7 +966,6 @@ elif page == "📝 Логи":
         log_search = st.text_input("Поиск", placeholder="Поиск по сообщению")
     
     # Таблица логов
-    st.markdown("### 📋 Последние логи")
     
     logs_data = pd.DataFrame({
         'Время': ['15:30:45', '15:29:12', '15:28:33', '15:27:01', '15:26:15'],
@@ -1033,7 +999,6 @@ elif page == "📝 Логи":
             st.success("Очистка логов запущена")
     
     # Статистика логов
-    st.markdown("### 📊 Статистика логов")
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
@@ -1049,12 +1014,10 @@ elif page == "📝 Логи":
 # SQL ЗАПРОСЫ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
 elif page == "🔧 SQL Запросы":
-    st.markdown("## 🔧 SQL Запросы")
     
     col1, col2 = st.columns([2, 1])
     
     with col1:
-        st.markdown("### Редактор запросов")
         
         # Пример SQL запроса
         default_query = """-- Пример запроса: все активные товары с ценами
@@ -1097,7 +1060,6 @@ LIMIT 100;"""
                 st.info("Запрос скопирован")
     
     with col2:
-        st.markdown("### Готовые запросы")
         
         queries = [
             "Все активные товары",
@@ -1114,7 +1076,6 @@ LIMIT 100;"""
             if st.button(f"📋 {query}", key=f"sql_btn_{i}"):
                 st.info(f"Загружен запрос: {query}")
         
-        st.markdown("### Категории запросов")
         
         with st.expander("📊 Основные выборки"):
             st.code("SELECT * FROM products WHERE active = true;")
@@ -1130,7 +1091,6 @@ LIMIT 100;"""
             st.code("DELETE FROM validation_logs WHERE timestamp < NOW() - INTERVAL '30 days';")
     
     # Результат запроса
-    st.markdown("### Результат запроса")
     if sql_query.strip():
         # Пример результата
         result_data = pd.DataFrame({
@@ -1159,10 +1119,8 @@ LIMIT 100;"""
 # НАСТРОЙКИ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
 # =============================================================================
 elif page == "⚙️ Настройки":
-    st.markdown("## ⚙️ Настройки системы")
     
     # API ключи
-    st.markdown("### 🔑 API ключи")
     
     with st.expander("Wildberries API"):
         col1, col2 = st.columns(2)
@@ -1203,12 +1161,10 @@ elif page == "⚙️ Настройки":
             st.success("Supabase настройки сохранены")
     
     # Настройки синхронизации
-    st.markdown("### 🔄 Настройки синхронизации")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("#### Автоматическая синхронизация")
         auto_sync = st.checkbox("Включить автосинхронизацию", value=True)
         sync_interval = st.selectbox(
             "Интервал синхронизации",
@@ -1219,7 +1175,6 @@ elif page == "⚙️ Настройки":
         sync_warehouse = st.checkbox("Синхронизировать остатки", value=False)
     
     with col2:
-        st.markdown("#### Параметры синхронизации")
         batch_size = st.number_input("Размер батча", min_value=10, max_value=1000, value=100, key="batch_size_2")
         max_items = st.number_input("Максимум товаров за раз", min_value=100, max_value=10000, value=1000, key="max_items_2")
         retry_attempts = st.number_input("Количество попыток", min_value=1, max_value=10, value=3, key="retry_attempts")
@@ -1229,7 +1184,6 @@ elif page == "⚙️ Настройки":
         st.success("Настройки синхронизации сохранены")
     
     # Настройки уведомлений
-    st.markdown("### 📧 Уведомления")
     
     col1, col2 = st.columns(2)
     
@@ -1248,7 +1202,6 @@ elif page == "⚙️ Настройки":
         st.success("Настройки уведомлений сохранены")
     
     # Системные настройки
-    st.markdown("### 🖥️ Системные настройки")
     
     col1, col2 = st.columns(2)
     
@@ -1266,7 +1219,6 @@ elif page == "⚙️ Настройки":
         st.success("Системные настройки сохранены")
     
     # Действия
-    st.markdown("### 🔧 Действия")
     
     col1, col2, col3, col4 = st.columns(4)
     
