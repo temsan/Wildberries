@@ -56,6 +56,155 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# Максимально компактный CSS - убираем все пустые места
+st.markdown("""
+<style>
+/* МАКСИМАЛЬНАЯ КОМПАКТНОСТЬ - убираем все пустые места */
+
+/* Основной контейнер - минимальные отступы */
+.main .block-container {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    max-width: 100% !important;
+}
+
+/* Заголовки - минимальные отступы */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0.1rem !important;
+    margin-bottom: 0.1rem !important;
+    padding-top: 0.1rem !important;
+    padding-bottom: 0.1rem !important;
+    line-height: 1.2 !important;
+}
+
+/* Колонки - без отступов */
+.stColumns > div {
+    padding: 0.05rem !important;
+}
+
+/* Кнопки - очень компактные */
+.stButton > button {
+    padding: 0.1rem 0.3rem !important;
+    margin: 0.05rem !important;
+    min-height: 1.2rem !important;
+    font-size: 0.8rem !important;
+}
+
+/* Метрики - компактные */
+[data-testid="metric-container"] {
+    padding: 0.05rem !important;
+    margin: 0.05rem !important;
+}
+
+[data-testid="metric-container"] > div {
+    padding: 0.05rem !important;
+}
+
+/* Таблицы - компактные */
+.dataframe {
+    font-size: 0.7rem !important;
+    margin: 0.05rem !important;
+}
+
+/* Боковая панель - компактная */
+.css-1d391kg {
+    padding-top: 0.1rem !important;
+}
+
+/* Убираем все лишние отступы */
+.element-container {
+    margin-bottom: 0.1rem !important;
+}
+
+/* Компактные элементы формы */
+.stSelectbox, .stNumberInput, .stTextInput, .stTextArea {
+    margin-bottom: 0.05rem !important;
+}
+
+.stSelectbox > div, .stNumberInput > div, .stTextInput > div {
+    margin-bottom: 0.05rem !important;
+}
+
+/* Компактные expander */
+.streamlit-expanderHeader {
+    padding: 0.1rem 0.3rem !important;
+    font-size: 0.8rem !important;
+}
+
+.streamlit-expanderContent {
+    padding: 0.1rem !important;
+}
+
+/* Компактные вкладки */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 0.05rem !important;
+}
+
+.stTabs [data-baseweb="tab"] {
+    padding: 0.1rem 0.3rem !important;
+    font-size: 0.8rem !important;
+}
+
+/* Убираем отступы у markdown */
+.stMarkdown {
+    margin-bottom: 0.05rem !important;
+}
+
+/* Компактные алерты */
+.stAlert {
+    padding: 0.1rem !important;
+    margin: 0.05rem !important;
+}
+
+/* Компактные спиннеры */
+.stSpinner {
+    margin: 0.05rem !important;
+}
+
+/* Общие отступы */
+div[data-testid="stVerticalBlock"] {
+    gap: 0.1rem !important;
+}
+
+div[data-testid="stHorizontalBlock"] {
+    gap: 0.05rem !important;
+}
+
+/* Вкладки сверху - компактные */
+.stTabs {
+    margin-top: 0.1rem !important;
+}
+
+/* Боковая панель - без скролла */
+.css-1d391kg {
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+/* Убираем отступы между элементами */
+div[data-testid="stVerticalBlock"] > div {
+    margin-bottom: 0.05rem !important;
+}
+
+/* Компактные карточки */
+.stCard {
+    padding: 0.1rem !important;
+    margin: 0.05rem !important;
+}
+
+/* Темная тема - компактная */
+.stApp {
+    background-color: #1a1a1a !important;
+}
+
+.stApp > div > div > div > div {
+    background-color: #1a1a1a !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # =============================================================================
 # СТИЛИ - ПОЛНОФУНКЦИОНАЛЬНЫЙ ДИЗАЙН
 # =============================================================================
@@ -369,13 +518,13 @@ with tab1:
     
     with col1:
         st.markdown("### 🎯 Быстрые действия")
-        if st.button("🔄 Синхронизировать данные", use_container_width=True):
+        if st.button("🔄 Синхронизировать данные", key="btn_sync"):
             st.success("Синхронизация запущена!")
         
-        if st.button("📊 Обновить метрики", use_container_width=True):
+        if st.button("📊 Обновить метрики", key="btn_sync"):
             st.success("Метрики обновлены!")
         
-        if st.button("📈 Сгенерировать отчет", use_container_width=True):
+        if st.button("📈 Сгенерировать отчет", key="btn_sync"):
             st.success("Отчет создан!")
     
     with col2:
@@ -454,7 +603,7 @@ with tab2:
                             f"{stats['execution_time_ms']/1000:.2f}с"
                         ]
                     })
-                    st.dataframe(results_data, use_container_width=True)
+                    st.dataframe(results_data, key="btn_sync")
                     
                     # Показываем аналитику
                     if stats['success'] > 0:
@@ -504,7 +653,7 @@ with tab2:
             'Статус': ['✅ Успех', '✅ Успех', '⚠️ Предупреждения', '✅ Успех'],
             'Товаров': [156, 89, 134, 67]
         })
-        st.dataframe(history_data, use_container_width=True)
+        st.dataframe(history_data, key="btn_sync")
 
 # =============================================================================
 # ТОВАРЫ - ПОЛНАЯ ФУНКЦИОНАЛЬНОСТЬ
@@ -552,26 +701,26 @@ with tab3:
         'Обновлен': ['2 мин', '1 час', '3 часа', '5 мин', '30 мин']
     })
     
-    st.dataframe(sample_data, use_container_width=True)
+    st.dataframe(sample_data, key="btn_sync")
     
     # Действия с товарами
     st.markdown("### Действия")
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        if st.button("📊 Анализ товаров", use_container_width=True):
+        if st.button("📊 Анализ товаров", key="btn_sync"):
             st.info("Анализ запущен")
     
     with col2:
-        if st.button("📤 Экспорт в Excel", use_container_width=True):
+        if st.button("📤 Экспорт в Excel", key="btn_sync"):
             st.info("Экспорт запущен")
     
     with col3:
-        if st.button("🔄 Обновить данные", use_container_width=True):
+        if st.button("🔄 Обновить данные", key="btn_sync"):
             st.info("Обновление запущено")
     
     with col4:
-        if st.button("🗑️ Очистить неактивные", use_container_width=True):
+        if st.button("🗑️ Очистить неактивные", key="btn_sync"):
             st.info("Очистка запущена")
 
 # =============================================================================
@@ -596,7 +745,7 @@ with tab4:
             'Обновлено': ['2 мин', '1 час', '3 часа', '5 мин', '30 мин']
         })
         
-        st.dataframe(price_data, use_container_width=True)
+        st.dataframe(price_data, key="btn_sync")
         
         # Массовые операции с ценами
         st.markdown("### 💰 Массовые операции")
@@ -620,16 +769,16 @@ with tab4:
     with col2:
         st.markdown("### Анализ цен")
         
-        if st.button("📊 Анализ цен", use_container_width=True):
+        if st.button("📊 Анализ цен", key="btn_sync"):
             st.info("Анализ цен запущен")
         
-        if st.button("💰 Обновить цены", use_container_width=True):
+        if st.button("💰 Обновить цены", key="btn_sync"):
             st.info("Обновление цен запущено")
         
-        if st.button("🎯 Конкурентный анализ", use_container_width=True):
+        if st.button("🎯 Конкурентный анализ", key="btn_sync"):
             st.info("Анализ конкурентов запущен")
         
-        if st.button("📈 Динамика цен", use_container_width=True):
+        if st.button("📈 Динамика цен", key="btn_sync"):
             st.info("Анализ динамики запущен")
         
         # График цен
@@ -694,18 +843,18 @@ with tab5:
         'Причина': ['Ручное изменение', 'Конкурентный анализ', 'Без изменений', 'Автоматическое повышение']
     })
     
-    st.dataframe(history_table, use_container_width=True)
+    st.dataframe(history_table, key="btn_sync")
     
     # Экспорт истории
     col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button("📤 Экспорт в Excel", use_container_width=True):
+        if st.button("📤 Экспорт в Excel", key="btn_sync"):
             st.success("Экспорт истории в Excel запущен")
     with col2:
-        if st.button("📊 Создать отчет", use_container_width=True):
+        if st.button("📊 Создать отчет", key="btn_sync"):
             st.success("Отчет по истории цен создан")
     with col3:
-        if st.button("🔍 Найти аномалии", use_container_width=True):
+        if st.button("🔍 Найти аномалии", key="btn_sync"):
             st.success("Поиск аномалий в ценах запущен")
 
 # =============================================================================
@@ -746,21 +895,21 @@ with tab6:
         'Детали': ['156 товаров', 'Успех', 'Повторить через 1 мин', 'Проверить ключ', '0 ошибок']
     })
     
-    st.dataframe(logs_data, use_container_width=True)
+    st.dataframe(logs_data, key="btn_sync")
     
     # Действия с логами
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        if st.button("🔄 Обновить логи", use_container_width=True):
+        if st.button("🔄 Обновить логи", key="btn_sync"):
             st.success("Логи обновлены")
     
     with col2:
-        if st.button("📤 Экспорт логов", use_container_width=True):
+        if st.button("📤 Экспорт логов", key="btn_sync"):
             st.success("Экспорт логов запущен")
     
     with col3:
-        if st.button("🗑️ Очистить старые логи", use_container_width=True):
+        if st.button("🗑️ Очистить старые логи", key="btn_sync"):
             st.success("Очистка логов запущена")
     
     # Статистика логов
@@ -842,7 +991,7 @@ LIMIT 100;"""
         ]
         
         for query in queries:
-            if st.button(f"📋 {query}", use_container_width=True):
+            if st.button(f"📋 {query}", key="btn_sync"):
                 st.info(f"Загружен запрос: {query}")
         
         st.markdown("### Категории запросов")
@@ -873,7 +1022,7 @@ LIMIT 100;"""
             'discounted_price': [1350, 1955, 1800],
             'discount': [10, 15, 0]
         })
-        st.dataframe(result_data, use_container_width=True)
+        st.dataframe(result_data, key="btn_sync")
         
         st.markdown("**Статистика запроса:**")
         col1, col2, col3 = st.columns(3)
@@ -1002,17 +1151,17 @@ with tab8:
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        if st.button("🔄 Перезапустить сервисы", use_container_width=True):
+        if st.button("🔄 Перезапустить сервисы", key="btn_sync"):
             st.success("Сервисы перезапущены")
     
     with col2:
-        if st.button("🧹 Очистить кэш", use_container_width=True):
+        if st.button("🧹 Очистить кэш", key="btn_sync"):
             st.success("Кэш очищен")
     
     with col3:
-        if st.button("📊 Проверить систему", use_container_width=True):
+        if st.button("📊 Проверить систему", key="btn_sync"):
             st.success("Проверка системы завершена")
     
     with col4:
-        if st.button("💾 Создать резервную копию", use_container_width=True):
+        if st.button("💾 Создать резервную копию", key="btn_sync"):
             st.success("Резервная копия создана")
