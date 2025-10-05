@@ -53,31 +53,59 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Кастомные стили
+# Кастомные стили - чистый минималистичный дизайн
 st.markdown("""
     <style>
-    .big-metric {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #1f77b4;
+    /* Основной фон */
+    .stApp {
+        background-color: #f8f9fa;
     }
-    .success-box {
-        padding: 1rem;
-        background-color: #d4edda;
-        border-left: 5px solid #28a745;
-        margin: 1rem 0;
+    
+    /* Боковая панель */
+    [data-testid="stSidebar"] {
+        background-color: #ffffff;
+        border-right: 1px solid #e0e0e0;
     }
-    .warning-box {
-        padding: 1rem;
-        background-color: #fff3cd;
-        border-left: 5px solid #ffc107;
-        margin: 1rem 0;
+    
+    /* Убираем радиокнопки из навигации */
+    [data-testid="stSidebar"] [role="radiogroup"] {
+        display: none;
     }
-    .error-box {
-        padding: 1rem;
-        background-color: #f8d7da;
-        border-left: 5px solid #dc3545;
-        margin: 1rem 0;
+    
+    /* Метрики */
+    [data-testid="stMetricValue"] {
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+    
+    /* Кнопки */
+    .stButton > button {
+        border-radius: 6px;
+        border: 1px solid #e0e0e0;
+        background-color: white;
+        color: #333;
+        font-weight: 500;
+    }
+    
+    .stButton > button:hover {
+        border-color: #4285f4;
+        color: #4285f4;
+    }
+    
+    /* Таблицы */
+    [data-testid="stDataFrame"] {
+        border: 1px solid #e0e0e0;
+    }
+    
+    /* Заголовки */
+    h1 {
+        color: #333;
+        font-weight: 600;
+    }
+    
+    h2, h3 {
+        color: #555;
+        font-weight: 600;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -95,9 +123,16 @@ def init_session_state():
             st.session_state.db_error = str(e)
         return False
 
+# Инициализация page в session_state
+if 'page' not in st.session_state:
+    st.session_state.page = "📊 Dashboard"
+
 # Боковая панель
 with st.sidebar:
-    st.title("🛠️ WB API Dashboard")
+    st.title("📦 WB API")
+    st.caption("Dashboard & Analytics")
+    
+    st.divider()
 
     # Инициализируем session state для боковой панели
     init_session_state()
@@ -106,26 +141,47 @@ with st.sidebar:
     if st.session_state.get('db_connected', False):
         st.success("✅ БД подключена")
     else:
-        st.error("❌ Ошибка подключения к БД")
-        st.error(st.session_state.get('db_error', 'Неизвестная ошибка'))
-        st.info("Проверьте SUPABASE_URL и SUPABASE_KEY в api_keys.py")
+        st.error("❌ БД не подключена")
+        with st.expander("Подробнее"):
+            st.warning(st.session_state.get('db_error', 'Неизвестная ошибка'))
+            st.info("Проверьте SUPABASE_URL и SUPABASE_KEY в api_keys.py")
     
     st.divider()
     
-    # Навигация
-    page = st.radio(
-        "Навигация",
-        [
-            "📊 Dashboard",
-            "🔄 Синхронизация",
-            "📦 Товары",
-            "💰 Цены",
-            "📈 История цен",
-            "📝 Логи",
-            "🔧 SQL Запросы",
-            "⚙️ Настройки"
-        ]
-    )
+    # Навигация с кнопками
+    st.subheader("Навигация")
+    
+    pages = [
+        ("📊", "Dashboard"),
+        ("🔄", "Синхронизация"),
+        ("📦", "Товары"),
+        ("💰", "Цены"),
+        ("📈", "История цен"),
+        ("📝", "Логи"),
+        ("🔧", "SQL Запросы"),
+        ("⚙️", "Настройки")
+    ]
+    
+    for icon, name in pages:
+        page_key = f"{icon} {name}"
+        if st.button(
+            f"{icon} {name}",
+            key=f"nav_{name}",
+            use_container_width=True,
+            type="primary" if st.session_state.page == page_key else "secondary"
+        ):
+            st.session_state.page = page_key
+            st.rerun()
+    
+    st.divider()
+    
+    # Информация
+    st.caption("**Версия:** 1.0.0")
+    st.caption("**Год:** 2025")
+    st.caption("[📚 Документация](database/WEB_INTERFACE.md)")
+
+# Получаем текущую страницу
+page = st.session_state.page
 
 # =============================================================================
 # DASHBOARD
