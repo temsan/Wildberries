@@ -72,11 +72,18 @@ st.markdown("""
 
 /* Заголовки - минимальные отступы */
 h1, h2, h3, h4, h5, h6 {
-    margin-top: 0.1rem !important;
+    margin-top: 0.05rem !important;
+    margin-bottom: 0.05rem !important;
+    padding-top: 0.05rem !important;
+    padding-bottom: 0.05rem !important;
+    line-height: 1.1 !important;
+    font-size: 1rem !important;
+}
+
+/* Главный заголовок - очень компактный */
+h3 {
+    font-size: 0.9rem !important;
     margin-bottom: 0.1rem !important;
-    padding-top: 0.1rem !important;
-    padding-bottom: 0.1rem !important;
-    line-height: 1.2 !important;
 }
 
 /* Колонки - без отступов */
@@ -443,7 +450,7 @@ init_session_state()
 # =============================================================================
 
 # Заголовок
-st.markdown("# 📦 WB API Dashboard")
+st.markdown("### 📦 WB API Dashboard")
 st.markdown("Комплексное решение для автоматизации Wildberries API")
 
 # Статус подключения
@@ -990,8 +997,8 @@ LIMIT 100;"""
             "Статистика по брендам"
         ]
         
-        for query in queries:
-            if st.button(f"📋 {query}", key="btn_21"):
+        for i, query in enumerate(queries):
+            if st.button(f"📋 {query}", key=f"sql_btn_{i}"):
                 st.info(f"Загружен запрос: {query}")
         
         st.markdown("### Категории запросов")
