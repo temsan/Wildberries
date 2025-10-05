@@ -103,9 +103,9 @@ class GoogleSheetsReader:
             print(f"❌ Неожиданная ошибка: {e}")
             return []
     
-    def read_makar_table(self, spreadsheet_id: str = None) -> Dict[str, Any]:
+    def read_table(self, spreadsheet_id: str = None) -> Dict[str, Any]:
         """
-        Читает таблицу Макара с конфигурацией артикулов.
+        Читает таблицу с конфигурацией артикулов.
         
         Args:
             spreadsheet_id: ID таблицы (если не указан, используется из URL)
@@ -114,10 +114,10 @@ class GoogleSheetsReader:
             Структурированные данные таблицы
         """
         if not spreadsheet_id:
-            # ID из URL Макара: 1Aufum97SY2fChBKNyzP0tslUYbCQ6cCd41EkoEo05SM
+            # ID из URL: 1Aufum97SY2fChBKNyzP0tslUYbCQ6cCd41EkoEo05SM
             spreadsheet_id = "1Aufum97SY2fChBKNyzP0tslUYbCQ6cCd41EkoEo05SM"
         
-        print(f"📋 Читаем таблицу Макара: {spreadsheet_id}")
+        print(f"Читаем таблицу: {spreadsheet_id}")
         
         # Читаем данные из первого листа
         data = self.read_spreadsheet(spreadsheet_id, 'A1:Z100')
@@ -131,14 +131,14 @@ class GoogleSheetsReader:
             'total_rows': len(data),
             'headers': data[0] if data else [],
             'raw_data': data,
-            'parsed_data': self._parse_makar_table(data)
+            'parsed_data': self._parse_table(data)
         }
         
         return result
     
-    def _parse_makar_table(self, data: List[List[str]]) -> Dict[str, Any]:
+    def _parse_table(self, data: List[List[str]]) -> Dict[str, Any]:
         """
-        Парсит таблицу Макара в структурированный формат.
+        Парсит таблицу в структурированный формат.
         
         Args:
             data: Сырые данные из Google Sheets

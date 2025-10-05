@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-Анализ структуры таблицы Макара на основе URL
+Анализ структуры таблицы на основе URL
 Помогает понять, как организовать хранение данных
 """
 
-def analyze_makar_table_structure():
-    """Анализирует структуру таблицы Макара"""
-    print("АНАЛИЗ СТРУКТУРЫ ТАБЛИЦЫ МАКАРА")
+def analyze_table_structure():
+    """Анализирует структуру таблицы"""
+    print("АНАЛИЗ СТРУКТУРЫ ТАБЛИЦЫ")
     print("=" * 60)
     print("URL: https://docs.google.com/spreadsheets/d/1Aufum97SY2fChBKNyzP0tslUYbCQ6cCd41EkoEo05SM/edit")
     print("=" * 60)
     
-    # На основе описания таблицы из предыдущих сообщений
-    # Предполагаемая структура таблицы Макара
+    # На основе описания таблицы
+    # Предполагаемая структура таблицы
     print("\nПРЕДПОЛАГАЕМАЯ СТРУКТУРА ТАБЛИЦЫ:")
     print("-" * 40)
     
@@ -184,4 +184,4 @@ def analyze_makar_table_structure():
 
 
 if __name__ == "__main__":
-    analyze_makar_table_structure()
+    analyze_table_structure()

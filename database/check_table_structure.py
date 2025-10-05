@@ -21,8 +21,8 @@ except ImportError:
 
 
 def check_table_structure():
-    """Проверяет структуру таблицы Макара"""
-    print("🔍 ПРОВЕРКА СТРУКТУРЫ ТАБЛИЦЫ МАКАРА")
+    """Проверяет структуру таблицы"""
+    print("ПРОВЕРКА СТРУКТУРЫ ТАБЛИЦЫ")
     print("=" * 60)
     print("Таблица: https://docs.google.com/spreadsheets/d/1Aufum97SY2fChBKNyzP0tslUYbCQ6cCd41EkoEo05SM/edit")
     print("=" * 60)
@@ -32,7 +32,7 @@ def check_table_structure():
         print("💡 Установите: pip install google-api-python-client google-auth")
         return
     
-    # ID таблицы Макара
+    # ID таблицы
     SPREADSHEET_ID = "1Aufum97SY2fChBKNyzP0tslUYbCQ6cCd41EkoEo05SM"
     
     try:
