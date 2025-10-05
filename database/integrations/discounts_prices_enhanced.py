@@ -172,15 +172,18 @@ class DiscountsPricesDBProcessor:
     
     def _extract_variants(self, item: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        Извлекает варианты товара (баркоды, размеры) из данных API.
+        Извлекает варианты товара (баркоды = размеры) из данных API.
         
-        Структура: nmID → vendorCode → barcodes
+        Бизнес-логика:
+        - Баркод = Размер товара (M, L, XL)
+        - Управление = По артикулу (nmID) целиком
+        - Цены = Общие для всех размеров
         
         Args:
             item: Товар из Discounts-Prices API
             
         Returns:
-            Список вариантов товара (баркодов)
+            Список вариантов товара (баркоды-размеры)
         """
         variants = []
         
@@ -197,17 +200,41 @@ class DiscountsPricesDBProcessor:
         if isinstance(barcodes, (int, float)):
             barcodes = [str(barcodes)]
         
-        # Обрабатываем каждый баркод
-        for barcode in barcodes:
+        # Получаем размеры - могут быть в разных полях
+        sizes = item.get('sizes', [])
+        if not sizes:
+            sizes = item.get('size', [])
+            if sizes and isinstance(sizes, str):
+                sizes = [sizes]
+        
+        # Если размеров нет, пробуем получить из других полей
+        if not sizes:
+            single_size = item.get('techSize', item.get('wbSize', ''))
+            if single_size:
+                sizes = [single_size]
+        
+        # Обрабатываем каждый баркод как отдельный размер
+        for i, barcode in enumerate(barcodes):
             if barcode and str(barcode).strip():  # Пропускаем пустые баркоды
+                # Определяем размер для этого баркода
+                size = ''
+                if i < len(sizes):
+                    size = sizes[i]
+                elif sizes:
+                    size = sizes[0]  # Используем первый размер для всех
+                else:
+                    # Генерируем размер на основе индекса
+                    size_options = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+                    size = size_options[i] if i < len(size_options) else f'Size_{i+1}'
+                
                 variant = {
                     'barcode': str(barcode).strip(),
-                    'size': item.get('size', item.get('techSize', item.get('wbSize', ''))),
+                    'size': str(size).strip(),
                     'active': True
                 }
                 variants.append(variant)
         
-        # Если нет баркодов, создаем один вариант с генерацией баркода
+        # Если нет баркодов, создаем один вариант с генерацией
         if not variants:
             nm_id = item.get('nmID', 0)
             vendor_code = item.get('vendorCode', '')
@@ -215,13 +242,16 @@ class DiscountsPricesDBProcessor:
             # Генерируем баркод на основе nmID и vendorCode
             generated_barcode = f"{nm_id}_{vendor_code}_default" if nm_id else "unknown_barcode"
             
+            # Определяем размер
+            size = item.get('size', item.get('techSize', item.get('wbSize', 'M')))
+            
             variants.append({
                 'barcode': generated_barcode,
-                'size': item.get('size', item.get('techSize', item.get('wbSize', ''))),
+                'size': str(size).strip() if size else 'M',
                 'active': True
             })
             
-            print(f"⚠️  nmID {nm_id}: Нет баркодов в API, создан генерацией: {generated_barcode}")
+            print(f"⚠️  nmID {nm_id}: Нет баркодов в API, создан: {generated_barcode} (размер: {size})")
         
         return variants
     
@@ -314,7 +344,9 @@ class DiscountsPricesDBProcessor:
                     failed_count += 1
                     continue
                 
-                # 1. Сначала создаем/обновляем продукт с вариантами
+                # 1. Создаем/обновляем продукт с размерами (баркодами)
+                # Каждый баркод = отдельный размер (M, L, XL)
+                # Управление ведется по артикулу (nmID) целиком
                 self.db_client.rpc('upsert_product_with_variants', {
                     'p_nm_id': processed['nm_id'],
                     'p_vendor_code': processed['vendor_code'],
@@ -322,10 +354,12 @@ class DiscountsPricesDBProcessor:
                     'p_title': processed['title'],
                     'p_subject': processed['subject'],
                     'p_volume': processed['volume'],
-                    'p_variants': json.dumps(processed['variants'])
+                    'p_variants': json.dumps(processed['variants'])  # [{barcode: "123", size: "M"}, ...]
                 }).execute()
                 
-                # 2. Затем обновляем цены с историей
+                # 2. Сохраняем цены для всего артикула
+                # Цены общие для всех размеров (M, L, XL)
+                # Никто не настраивает отдельные цены для размеров
                 self.db_client.rpc('update_prices_with_history', {
                     'p_nm_id': processed['nm_id'],
                     'p_vendor_code': processed['vendor_code'],
